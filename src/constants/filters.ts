@@ -1,4 +1,4 @@
-const DATE_OPERATOR = [
+export const DATE_OPERATOR = [
     "is",
     "is not",
     "is after",
@@ -8,7 +8,7 @@ const DATE_OPERATOR = [
     "is empty",
     "is not empty"
 ]
-const STRING_OPERATOR = [
+export const STRING_OPERATOR = [
     "contains",
     "equals",
     "startsWith",
@@ -17,7 +17,7 @@ const STRING_OPERATOR = [
     "isNotEmpty",
     "isAnyOf",
 ]
-const NUMBERIC_OPERATOR = [
+export const NUMBERIC_OPERATOR = [
     "=",
     "!=",
     ">",
