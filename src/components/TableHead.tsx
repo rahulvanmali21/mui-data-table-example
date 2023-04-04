@@ -11,20 +11,11 @@ import {
   Menu,
   MenuItem,
   Popover,
-  List,
-  ListSubheader,
-  ListItem,
-  ListItemIcon,
-  Checkbox,
-  ListItemText,
-  Grid,
-  FormControl,
-  InputLabel,
-  NativeSelect,
 } from "@mui/material";
 import Resizer from "./Resizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
+import Filter from "./Filter";
+import ColumnSelection from "./ColumnSelection"
 const TableHead = () => {
   const table = useTable();
   const [anchorEl, setAnchorEl] = useState<
@@ -111,72 +102,8 @@ const TableHead = () => {
               open={!!mainAnchor}
               onClose={(e) => setmainAnchor(null)}
             >
-              {menuType === "filters" && (
-                <Box sx={{ maxWidth: 600 ,p:2 ,width:600}}>
-                  <Grid container>
-                    <Grid item xs={4}>
-                      <FormControl fullWidth>
-                        <InputLabel
-                          variant="standard"
-                          htmlFor="uncontrolled-native"
-                        >
-                          column
-                        </InputLabel>
-                        <NativeSelect
-                          defaultValue={30}
-                          inputProps={{
-                            name: "age",
-                            id: "uncontrolled-native",
-                          }}
-                        >
-                        {
-                            table.getAllLeafColumns().filter(c=>c.id!=="select").map((column,cid)=>(
-                                <option value={column.id}>{column.id}</option>
-                            ))
-                        }
-
-                        </NativeSelect>
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={4}></Grid>
-                    <Grid item xs={4}></Grid>
-                  </Grid>
-                </Box>
-              )}
-              {menuType === "columns" && (
-                <List
-                  sx={{
-                    width: "100%",
-                    maxWidth: 360,
-                    bgcolor: "background.paper",
-                  }}
-                  subheader={<ListSubheader>Columns</ListSubheader>}
-                >
-                  {table
-                    .getAllLeafColumns()
-                    .filter((c) => c.id !== "selection")
-                    .map((column, index) => (
-                      <ListItem key={index}>
-                        <ListItemIcon
-                          sx={{
-                            "&.MuiListItemIcon-root": { minWidth: "unset" },
-                          }}
-                        >
-                          <Checkbox
-                            edge="start"
-                            tabIndex={-1}
-                            disableRipple
-                            {...{
-                              checked: column.getIsVisible(),
-                              onChange: column.getToggleVisibilityHandler(),
-                            }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText id={column.id} primary={column.id} />
-                      </ListItem>
-                    ))}
-                </List>
-              )}
+              {menuType === "filters" && <Filter/>}
+              {menuType === "columns" && <ColumnSelection/> }
             </Popover>
           </td>
         </tr>
