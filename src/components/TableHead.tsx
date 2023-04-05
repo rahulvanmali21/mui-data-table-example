@@ -58,26 +58,25 @@ const TableHead = () => {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <span>
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
                       {header.column.getCanSort() && (
                         <TableSortLabel
+                            sx={{marginRight:"auto"}}
                           active={!!header.column.getIsSorted()}
                           onClick={header.column.getToggleSortingHandler()}
                           // react-table has a unsorted state which is not treated here
                           direction={header.column.getIsSorted() || undefined}
                         />
                       )}
-                    </span>
                     {header.id !== "select" && (
                       <IconButton
                         size="small"
                         onClick={(e) => handleClick(e, header.column)}
                       >
-                        <MoreVertIcon fontSize="small" />
+                        <MoreVertIcon sx={(theme)=>({fill:theme.palette.divider})} fontSize="small" />
                       </IconButton>
                     )}
                   </Box>
