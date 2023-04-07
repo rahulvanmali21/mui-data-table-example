@@ -26,12 +26,12 @@ const Filter = () => {
   const [value, setValue] = useState<string | null>(null);
 
   
+  const type = selectedColumn ? table.getColumn(selectedColumn)?.columnDef?.meta?.type : "text";
     
   
   const operators = useMemo(() => {
     if(selectedColumn){
         const colDef =  table.getColumn(selectedColumn)?.columnDef;
-        console.log({colDef})
         if(colDef?.meta?.type ==="number"){
             return NUMBERIC_OPERATOR;
         }
@@ -87,10 +87,12 @@ const Filter = () => {
         </Grid>
         <Grid item xs={4}>
           <TextField
+            fullWidth
             value={value}
             onChange={(e) => setValue(e.target.value)}
             label="value "
             variant="standard"
+            type={type}
           />
         </Grid>
       </Grid>

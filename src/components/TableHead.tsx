@@ -16,14 +16,28 @@ import Resizer from "./Resizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Filter from "./Filter";
 import ColumnSelection from "./ColumnSelection"
+import useTableOptions from "../hooks/useTableOptions";
+import { SortOrder } from "../types/TableControl";
+
+const SORTS:SortOrder[] = [undefined,"asc","desc"]
+
+
 const TableHead = () => {
   const table = useTable();
-  const [anchorEl, setAnchorEl] = useState<
-    (EventTarget & HTMLButtonElement) | null
-  >(null);
+  const tableOptions = useTableOptions();
+
+
+
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
   const [mainAnchor, setmainAnchor] = useState<Element | null>(null);
   const [menuType, setMenuType] = useState<string | null>(null);
+  const [sorts,setSort] = useState<any>({})
+
   const menuAnchor = useRef<HTMLTableRowElement>(null);
+
+
+
+  const manualSorting  = tableOptions?.manualSorting ?? false;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, column: any) => {
     setAnchorEl(e.currentTarget);
@@ -33,6 +47,33 @@ const TableHead = () => {
     setMenuType(type);
     setmainAnchor(menuAnchor?.current);
   };
+
+
+  const getIsSorted = (columnId:string) :SortOrder=>{
+    if(sorts[columnId]){
+      return sorts[columnId].order
+    }
+    return undefined
+  }
+  
+  const getToggleSortingHandler = (columnId:any)=>{
+    let sortObj
+    if(!sorts[columnId] || !sorts[columnId].order){
+      sortObj = {[columnId]:{order:"asc"}}
+    }else if (sorts[columnId]?.order ==="asc"){
+      sortObj = {[columnId]:{order:"desc"}}
+    }else{
+      const copy = structuredClone(sorts);
+      delete copy[columnId]
+      sortObj = copy
+    }
+    setSort(sortObj)
+    tableOptions?.sortingOptions?.onSort(sortObj)
+  }
+
+
+
+
 
   return (
     <>
@@ -64,11 +105,10 @@ const TableHead = () => {
                       )}
                       {header.column.getCanSort() && (
                         <TableSortLabel
-                            sx={{marginRight:"auto"}}
-                          active={!!header.column.getIsSorted()}
-                          onClick={header.column.getToggleSortingHandler()}
-                          // react-table has a unsorted state which is not treated here
-                          direction={header.column.getIsSorted() || undefined}
+                          sx={{marginRight:"auto"}}
+                          active={manualSorting ? !!getIsSorted(header.column.id) : !!header.column.getIsSorted()}
+                          onClick={manualSorting ? ()=>getToggleSortingHandler(header.column.id) : header.column.getToggleSortingHandler()}
+                          direction={manualSorting ? getIsSorted(header.column.id) : header.column.getIsSorted() || undefined}
                         />
                       )}
                     {header.id !== "select" && (
