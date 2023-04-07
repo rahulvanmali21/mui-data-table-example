@@ -86,7 +86,7 @@ const DataTable = (props: DataTableProp) => {
       <TableContainer component={Paper}>
         <MuiTable sx={{ width: "100%" || table.getCenterTotalSize() }}>
           <TableHead />
-          <TableBody />
+          <TableBody loading={props.loading ?? false} />
         </MuiTable>
         <TablePagination />
       </TableContainer>
