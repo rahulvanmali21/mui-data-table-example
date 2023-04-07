@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import DataTable from './components/DataTable'
 import { Container } from '@mui/material'
@@ -78,18 +76,19 @@ function App() {
         header: () => <span>Url</span>,
       },
     ],[]);
-  const [rowsPerPage, setrowsPerPage] = useState<number>(10)
+  const [rowsPerPage, setrowsPerPage] = useState<number>(10);
+  const [pageIndex, setPageIndex] = useState<number>(0);
   const [data, setData] = useState<any>();
 
   const fetchData = async(page=1,limit=10)=>{
-    let res = await fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${page}&limit=${limit}`);
+    let res = await fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${page * limit}&limit=${limit}`);
     let data = await res.json();
     console.log(data);
     setData(data)
   }
   useEffect(()=>{
-    fetchData();
-  },[rowsPerPage])
+    fetchData(pageIndex,rowsPerPage);
+  },[rowsPerPage,pageIndex])
 
 
   const tableOptions = {
@@ -98,7 +97,8 @@ function App() {
       totalCount:data?.count ?? undefined,
       rowsPerPage:rowsPerPage,
       onRowsPerPageChange:(s:number)=>setrowsPerPage(s),
-      gotoPage:()=>{},
+      gotoPage:(pageNum:number)=>{setPageIndex(pageNum)},
+      pageIndex:pageIndex
     }
   }
 
