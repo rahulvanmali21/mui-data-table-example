@@ -10,7 +10,7 @@ const TableBody = () => {
     {table.getRowModel().rows.map((row) => (
       <TableRow hover key={row.id} >
         {row.getVisibleCells().map((cell,i) => (
-          <TableCell key={cell.id} padding={i ===0 ? "checkbox" : "normal"}>
+          <TableCell size='small' key={cell.id} padding={i ===0 ? "checkbox" : "normal"}>
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </TableCell>
         ))}
