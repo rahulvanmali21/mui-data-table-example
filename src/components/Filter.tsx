@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import useTable from "../hooks/useTable";
 import {
   Box,
+  Button,
   FormControl,
   Grid,
   InputLabel,
@@ -26,18 +27,23 @@ const Filter = () => {
   const [operator, setOperator] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
+  const columnnIdRef = useRef<HTMLSelectElement>();
+  const operatorRef = useRef<HTMLSelectElement>();
+  const valueRef = useRef<HTMLInputElement>();
+
+
   const tableOptions = useTableOptions()
   
   const type = selectedColumn ? table.getColumn(selectedColumn)?.columnDef?.meta?.type : "text";
-
+  const filter = tableOptions?.filterOptions.filters ?? null;
 
   useEffect(()=>{
-    if(selectedColumn && value && operator){
-      tableOptions?.filterOptions?.setFilters({
-        columnId:selectedColumn ,  operator,value
-      })
-    }
-  },[value,operator,selectedColumn])
+    setSelectedColumn(filter?.columnId ?? null);
+    setOperator(filter?.operator ?? null);
+    setValue(filter?.value ?? null);
+  },[filter])
+
+
     
   
   const operators = useMemo(() => {
@@ -54,24 +60,34 @@ const Filter = () => {
     return STRING_OPERATOR;
   }, [selectedColumn]);
 
+  const applyFilter = () =>{
+    let filters = {
+      columnId:columnnIdRef.current?.value,
+      operator:operatorRef.current?.value,
+      value:valueRef.current?.value
+    }
+    
+    tableOptions?.filterOptions?.setFilters(filters)
+  }
 
 
 
   return (
     <Box sx={{ maxWidth: 600, p: 2, width: 600 }}>
-      <Grid container columnSpacing={2}>
-        <Grid item xs={4}>
+      <Grid container columnSpacing={2} columns={10} alignItems="flex-end">
+        <Grid item xs={3}>
           <FormControl fullWidth>
             <InputLabel variant="standard">column</InputLabel>
             <NativeSelect
               value={selectedColumn}
               onChange={(e) => setSelectedColumn(e.target.value)}
               defaultValue={30}
+              inputRef={columnnIdRef}
               inputProps={{
-                name: "age",
-                id: "uncontrolled-native",
+                name: "columnId",
               }}
             >
+
               {table
                 .getAllLeafColumns()
                 .filter((c) => c.id !== "select")
@@ -81,16 +97,16 @@ const Filter = () => {
             </NativeSelect>
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <FormControl fullWidth>
-            <InputLabel variant="standard">column</InputLabel>
+            <InputLabel variant="standard">operator</InputLabel>
             <NativeSelect
               onChange={(e) => setOperator(e.target.value)}
               value={operator}
               defaultValue={30}
+              inputRef={operatorRef}
               inputProps={{
-                name: "age",
-                id: "uncontrolled-native",
+                name: "operator",
               }}
             >
               {operators.map((column, cid) => (
@@ -99,15 +115,19 @@ const Filter = () => {
             </NativeSelect>
           </FormControl>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TextField
             fullWidth
             value={value}
+            inputRef={valueRef}
             onChange={(e) => setValue(e.target.value)}
             label="value "
             variant="standard"
             type={type}
           />
+        </Grid>
+        <Grid item xs={1}>
+              <Button onClick={applyFilter} sx={{textTransform:"unset"}}>Apply</Button>
         </Grid>
       </Grid>
     </Box>

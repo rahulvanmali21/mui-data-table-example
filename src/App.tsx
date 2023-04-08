@@ -87,7 +87,7 @@ function App() {
   const fetchData = async (page = 0, limit = 10) => {
     const url = new URL("http://localhost:1337/api/employees");
 
-    if(filters){
+    if(filters && filters.value && filters.operator && filters.value){
       // filters[username][$eq]=John
     const op:string = filters?.operator as string ?? "";
     url.searchParams.append(`filters[${filters.columnId}][${operators[op] ?? ""}]`, filters.value ??"");
