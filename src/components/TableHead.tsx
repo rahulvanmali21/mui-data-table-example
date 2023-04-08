@@ -18,7 +18,8 @@ import Filter from "./Filter";
 import ColumnSelection from "./ColumnSelection"
 import useTableOptions from "../hooks/useTableOptions";
 import { SortOrder } from "../types/TableControl";
-
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 const SORTS:SortOrder[] = [undefined,"asc","desc"]
 
 
@@ -99,6 +100,12 @@ const TableHead = () => {
                     justifyContent="space-between"
                     alignItems="center"
                   >
+                    {
+                      tableOptions?.filterOptions.filters?.columnId === header.column.id && (
+                        <FilterAltIcon sx={{cursor:"pointer"}} onClick={()=> tableOptions?.filterOptions.setFilters(null)} fontSize="small" color="primary" />
+                      )
+                    }
+
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()

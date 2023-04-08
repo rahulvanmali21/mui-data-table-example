@@ -33,7 +33,7 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
   
   
       return (
-        <OutlinedInput
+        <InputBase
           size="small"
           type={column.columnDef.meta?.type??"text"}
           fullWidth
