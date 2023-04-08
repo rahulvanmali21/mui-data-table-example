@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { DATE_OPERATOR, NUMBERIC_OPERATOR, STRING_OPERATOR } from "../constants/filters";
 import { RowData } from "@tanstack/react-table";
+import useTableOptions from "../hooks/useTableOptions";
 
 
 declare module '@tanstack/table-core' {
@@ -25,8 +26,18 @@ const Filter = () => {
   const [operator, setOperator] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
+  const tableOptions = useTableOptions()
   
   const type = selectedColumn ? table.getColumn(selectedColumn)?.columnDef?.meta?.type : "text";
+
+
+  useEffect(()=>{
+    if(selectedColumn && value && operator){
+      tableOptions?.filterOptions?.setFilters({
+        columnId:selectedColumn ,  operator,value
+      })
+    }
+  },[value,operator,selectedColumn])
     
   
   const operators = useMemo(() => {
@@ -42,6 +53,9 @@ const Filter = () => {
     }
     return STRING_OPERATOR;
   }, [selectedColumn]);
+
+
+
 
   return (
     <Box sx={{ maxWidth: 600, p: 2, width: 600 }}>
