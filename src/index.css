@@ -1,5 +1,9 @@
-::-webkit-datetime-edit-year-field:not([aria-valuenow]),
-::-webkit-datetime-edit-month-field:not([aria-valuenow]),
-::-webkit-datetime-edit-day-field:not([aria-valuenow]) {
+input[type=date]:required:invalid::-webkit-datetime-edit {
     color: transparent;
 }
+input[type=date]:focus::-webkit-datetime-edit {
+    color: black !important;
+}
+
+
+input[type='date']:in-range::-webkit-datetime-edit-year-field,input[type='date']:in-range::-webkit-datetime-edit-month-field,input[type='date']:in-range::-webkit-datetime-edit-day-field,input[type='date']:in-range::-webkit-datetime-edit-text{  color: transparent;}

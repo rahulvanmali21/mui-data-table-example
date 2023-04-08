@@ -3,13 +3,40 @@ import "./App.css";
 import DataTable from "./components/DataTable";
 import { Container } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
-import { TableOptions } from "./types/TableControl";
+import { Filter, TableOptions } from "./types/TableControl";
+
+
+const operators = {
+  "is" : "$eqi",
+  "is not" : "$ne",
+  "is after":"$gt",
+  "is on or after":"$gte",
+  "is before": "$lt",
+  "is on or before" : "$lt",
+  "is empty":"$null",
+  "is not empty":"$notNull",
+  "contains":"$contains",
+  "not contains":"$notContains",
+  "equals" : "$eqi",
+  "startsWith":"$startsWith",
+  "endsWith":"$endsWith",
+  "isEmpty":"$null",
+  "isNotEmpty":"$notNull",
+  "isAnyOf":"$between",
+  "=" :'$eqi',
+  "!=":"$ne",
+  ">":"$gt",
+  "<" :"$lt",
+  ">=":"$gte",
+  "<=":"$lte",
+}
+
 
 function App() {
-  const columns = useMemo<ColumnDef<any,any>[]>(
+  const columns = useMemo<ColumnDef<any, any>[]>(
     () => [
-      { 
-        id:"first_name",
+      {
+        id: "first_name",
         accessorKey: "attributes.first_name",
         header: () => <span>First Name</span>,
         footer: (props) => props.column.id,
@@ -50,45 +77,40 @@ function App() {
     []
   );
 
-  // const columns = useMemo<ColumnDef<any, any>[]>(
-  //   () => [
-  //     {
-  //       accessorKey: "name",
-  //       header: () => <span>Name</span>,
-  //     },
-  //     {
-  //       id: "url",
-  //       accessorKey: "url",
-  //       header: () => <span>Url</span>,
-  //     },
-  //   ],
-  //   []
-  // );
   const [rowsPerPage, setrowsPerPage] = useState<number>(10);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [sort, setSort] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>();
+  const [filters, setFilters] = useState<Filter>();
 
   const fetchData = async (page = 0, limit = 10) => {
-    const url = new URL('http://localhost:1337/api/employees')
-   
-    if(sort && Object.keys(sort).length > 0){
-      Object.keys(sort)?.forEach?.((column,index)=>{
-        url.searchParams.append(`sort[${index}]`,column + ":"+sort[column].order)
-      })
+    const url = new URL("http://localhost:1337/api/employees");
+
+    if(filters){
+      // filters[username][$eq]=John
+    const op:string = filters?.operator as string ?? "";
+    url.searchParams.append(`filters[${filters.columnId}][${operators[op] ?? ""}]`, filters.value ??"");
+
     }
-    url.searchParams.append("pagination[page]",`${page+1}`)
-    url.searchParams.append("pagination[pageSize]",`${limit}`)
-    console.log(url.toString() )
+
+    // pagination
+    url.searchParams.append("pagination[page]", `${page + 1}`);
+    url.searchParams.append("pagination[pageSize]", `${limit}`);
+
+    // sorting
+    if (sort && Object.keys(sort).length > 0) {
+      Object.keys(sort)?.forEach?.((column, index) => {
+        url.searchParams.append(
+          `sort[${index}]`,
+          column + ":" + sort[column].order
+        );
+      });
+    }
+
     try {
       setLoading(true);
-      // let res = await fetch(
-      //   `http://localhost:1337/api/employees?pagination[page]=${page+1}&pagination[pageSize]=${limit}`
-      // );
-      let res = await fetch(
-        url.toString()
-      );
+      let res = await fetch(url.toString());
       let data = await res.json();
       setData(data);
     } catch (error) {
@@ -98,11 +120,11 @@ function App() {
   };
   useEffect(() => {
     fetchData(pageIndex, rowsPerPage);
-  }, [rowsPerPage, pageIndex,sort]);
+  }, [rowsPerPage, pageIndex, sort,filters]);
 
-  const tableOptions:TableOptions = {
+  const tableOptions: TableOptions = {
     manualPagination: true,
-    manualSorting:true,
+    manualSorting: true,
     paginationOption: {
       totalCount: data?.meta.pagination.total ?? undefined,
       rowsPerPage: rowsPerPage,
@@ -112,12 +134,16 @@ function App() {
       },
       pageIndex: pageIndex,
     },
-    sortingOptions:{
-      currentSort:sort,
-      order:undefined,
-      onSort:(sortObj:any)=>{
+    sortingOptions: {
+      currentSort: sort,
+      order: undefined,
+      onSort: (sortObj: any) => {
         setSort(sortObj);
-      }
+      },
+    },
+    filterOptions:{
+      setFilters,
+      filters
     }
   };
 

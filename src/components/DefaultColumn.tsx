@@ -35,7 +35,7 @@ export const defaultColumn: Partial<ColumnDef<any>> = {
       return (
         <OutlinedInput
           size="small"
-          type={column.columnDef.meta?.type ==="number" ? "number":"text"}
+          type={column.columnDef.meta?.type??"text"}
           fullWidth
           value={value as string}
           onChange={(e) => setValue(e.target.value)}

@@ -18,11 +18,23 @@ type SortingOptions = {
     onSort:(column:any)=>void
 }
 
+type FilterOptions = {
+    filters?:Filter,
+    setFilters:(filters:any)=>void
+}
+export type Filter = {
+    columnId:string | null,
+    operator:string | null,
+    value:string | null
+}
+
+
 export type TableOptions = {
     manualPagination?:boolean,
     manualSorting?:boolean,
     paginationOption?:PaginationOptions
     sortingOptions?:SortingOptions
+    filterOptions:FilterOptions
 }
 
 

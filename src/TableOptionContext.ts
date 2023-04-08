@@ -15,7 +15,11 @@ const defaultValue:TableOptions = {
         currentSort:"",
         order:undefined,
         onSort:(column:any)=>{}
-    },  
+    },
+    filterOptions:{
+        setFilters:()=>null,
+        filters:null
+    },
     manualSorting:false,
 }
 

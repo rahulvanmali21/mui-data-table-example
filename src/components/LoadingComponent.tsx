@@ -8,7 +8,7 @@ const LoadingComponent = () => {
     <TableBody>
         <TableRow>
             <TableCell colSpan={table.getAllLeafColumns().length} >
-                <Box width="100%" height="400px" display="flex" alignItems="center" justifyContent="center">
+                <Box width="100%" height="200px" display="flex" alignItems="center" justifyContent="center">
                     <CircularProgress/>
                 </Box>
             </TableCell>
