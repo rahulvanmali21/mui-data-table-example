@@ -2,13 +2,11 @@ import { flexRender } from "@tanstack/react-table";
 import React from "react";
 import { useTable } from "../TableContext";
 import {
-  TableCell,
   TableRow,
   TableBody as MuiTableBody,
-  Box,
-  CircularProgress,
 } from "@mui/material";
 import LoadingComponent from "./LoadingComponent";
+import TableCell from "./ui/TableCell";
 
 const TableBody = ({ loading }: { loading: boolean }) => {
   const table = useTable();
@@ -18,17 +16,21 @@ const TableBody = ({ loading }: { loading: boolean }) => {
 
   return (
     <MuiTableBody>
-      {table.getRowModel().rows.map((row) => (
-        <TableRow hover key={row.id}>
-          {row.getVisibleCells().map((cell, i) => (
+      {table.getRowModel().rows.map((row,i) => (
+        <TableRow hover key={i}>
+          {row.getVisibleCells().map((cell, j) => {
+            const pinned = cell.column.getIsPinned()
+            return (
             <TableCell
               size="small"
-              key={cell.id}
-              padding={i === 0 ? "checkbox" : "normal"}
+              key={j}
+              pinned={pinned ?? false}
+              padding={j === 0 ? "checkbox" : "normal"}
             >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </TableCell>
-          ))}
+            )
+          })}
         </TableRow>
       ))}
     </MuiTableBody>

@@ -5,21 +5,18 @@ import {
   getPaginationRowModel,
   getCoreRowModel,
   ColumnDef,
+  ColumnOrderState,
   useReactTable,
   getSortedRowModel,
   SortingState,
   RowData,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import { TableContext } from "../TableContext";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
-import {
-  Table as MuiTable,
-  Paper,
-  TableContainer,
-} from "@mui/material";
-import { makeData } from "../util/makeData";
+import { Table as MuiTable, Paper, TableContainer } from "@mui/material";
 import TablePagination from "./TablePagination";
 import useSkipper from "../hooks/useSkipper";
 import { defaultColumn } from "./DefaultColumn";
@@ -34,31 +31,29 @@ declare module "@tanstack/react-table" {
   }
 }
 
-
-
-
-
-
-
-
-
 const DataTable = (props: DataTableProp) => {
-//   const [data, setData] = React.useState<Person[]>(makeData(311));
-
- 
+  //   const [data, setData] = React.useState<Person[]>(makeData(311));
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnPinning, setColumnPinning] = React.useState({});
+  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
 
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
+  console.log({columnPinning,columnOrder,columnVisibility})
   const table = useReactTable({
-    data:props.data ?? [],
-    columns:[rowSelectionOption,...props.columns],
+    data: props.data ?? [],
+    columns: [rowSelectionOption, ...props.columns],
     defaultColumn,
     state: {
       rowSelection,
       sorting,
+      columnVisibility,
+      columnOrder,
+      columnPinning,
     },
     onSortingChange: setSorting,
     columnResizeMode: "onChange",
@@ -68,28 +63,32 @@ const DataTable = (props: DataTableProp) => {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex,
-    manualPagination:true,
+    manualPagination: true,
+    onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
+    onColumnPinningChange: setColumnPinning,
     meta: {
       updateData: (rowIndex, columnId, value) => {
         // Skip page index reset until after next rerender
         skipAutoResetPageIndex();
-        props.onCellUpdate({rowIndex,columnId,value})
+        props.onCellUpdate({ rowIndex, columnId, value });
       },
     },
   });
 
-  
-
   return (
     <TableContext.Provider value={table}>
-    <TableOptionContext.Provider value={props.tableOptions}>
-      <TableContainer component={Paper}>
-        <MuiTable sx={{ width: "100%" || table.getCenterTotalSize() }}>
-          <TableHead />
-          <TableBody loading={props.loading ?? false} />
-        </MuiTable>
-        <TablePagination />
-      </TableContainer>
+      <TableOptionContext.Provider value={props.tableOptions}>
+        <TableContainer
+          component={Paper}
+          sx={{ maxWidth: "100%", overflowX: "auto" }}
+        >
+          <MuiTable sx={{ minWidth: "100%" }}>
+            <TableHead />
+            <TableBody loading={props.loading ?? false} />
+          </MuiTable>
+          <TablePagination />
+        </TableContainer>
       </TableOptionContext.Provider>
     </TableContext.Provider>
   );

@@ -61,13 +61,16 @@ const Filter = () => {
   }, [selectedColumn]);
 
   const applyFilter = () =>{
-    let filters = {
-      columnId:columnnIdRef.current?.value,
-      operator:operatorRef.current?.value,
-      value:valueRef.current?.value
+    if(columnnIdRef.current?.value && operatorRef.current?.value && valueRef.current?.value){
+      let filters = {
+        columnId:columnnIdRef.current?.value,
+        operator:operatorRef.current?.value,
+        value:valueRef.current?.value
+      }
+      
+      tableOptions?.filterOptions?.setFilters(filters);
     }
     
-    tableOptions?.filterOptions?.setFilters(filters)
   }
 
 
