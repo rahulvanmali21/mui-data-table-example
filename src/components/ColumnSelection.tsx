@@ -36,12 +36,6 @@ const ColumnSelection = () => {
             />
           </ListItemIcon>
           <ListItemText id={column.id} primary={column.id} />
-          {
-            (()=>{
-                console.log({column})
-                return ""
-            })()
-          }
         </ListItem>
       ))} 
   </List>

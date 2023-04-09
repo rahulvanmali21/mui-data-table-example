@@ -18,7 +18,6 @@ const defaultValue:TableOptions = {
     },
     filterOptions:{
         setFilters:()=>null,
-        filters:null
     },
     manualSorting:false,
 }

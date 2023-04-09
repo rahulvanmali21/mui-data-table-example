@@ -5,59 +5,60 @@ import { Container } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
 import { Filter, TableOptions } from "./types/TableControl";
 
-
-const operators = {
-  "is" : "$eqi",
-  "is not" : "$ne",
-  "is after":"$gt",
-  "is on or after":"$gte",
+const operators = new Map(Object.entries({
+  is: "$eqi",
+  "is not": "$ne",
+  "is after": "$gt",
+  "is on or after": "$gte",
   "is before": "$lt",
-  "is on or before" : "$lt",
-  "is empty":"$null",
-  "is not empty":"$notNull",
-  "contains":"$contains",
-  "not contains":"$notContains",
-  "equals" : "$eqi",
-  "startsWith":"$startsWith",
-  "endsWith":"$endsWith",
-  "isEmpty":"$null",
-  "isNotEmpty":"$notNull",
-  "isAnyOf":"$between",
-  "=" :'$eqi',
-  "!=":"$ne",
-  ">":"$gt",
-  "<" :"$lt",
-  ">=":"$gte",
-  "<=":"$lte",
-}
-
+  "is on or before": "$lt",
+  "is empty": "$null",
+  "is not empty": "$notNull",
+  "contains": "$contains",
+  "not contains": "$notContains",
+  "equals": "$eqi",
+  "startsWith": "$startsWith",
+  "endsWith": "$endsWith",
+  "isEmpty": "$null",
+  "isNotEmpty": "$notNull",
+  "isAnyOf": "$between",
+  "=": "$eqi",
+  "!=": "$ne",
+  ">": "$gt",
+  "<": "$lt",
+  ">=": "$gte",
+  "<=": "$lte",
+}));
 
 function App() {
   const columns = useMemo<ColumnDef<any, any>[]>(
     () => [
       {
         id: "first_name",
+
         accessorKey: "attributes.first_name",
         header: () => <span>First Name</span>,
         footer: (props) => props.column.id,
       },
       {
         id: "last_name",
+
         accessorKey: "attributes.last_name",
         header: () => <span>Last Name</span>,
         footer: (props) => props.column.id,
       },
       {
         id: "email",
+
         accessorKey: "attributes.email",
         header: () => "Email",
         footer: (props) => props.column.id,
       },
       {
         id: "views",
+
         accessorKey: "attributes.views",
         header: () => <span>views</span>,
-        type: "number",
         meta: {
           type: "number",
         },
@@ -65,12 +66,42 @@ function App() {
       },
       {
         id: "dob",
+
         accessorKey: "attributes.dob",
         header: "Date of Birth",
         meta: {
           type: "date",
         },
-        type: "date",
+        footer: (props) => props.column.id,
+      },
+      {
+        id: "createdAt",
+
+        accessorKey: "attributes.createdAt",
+        header: "Created At",
+        meta: {
+          type: "datetime",
+        },
+        footer: (props) => props.column.id,
+      },
+      {
+        id: "updatedAt",
+
+        accessorKey: "attributes.updatedAt",
+        header: "Updated At",
+        meta: {
+          type: "datetime",
+        },
+        footer: (props) => props.column.id,
+      },
+      {
+        id: "updatedAt",
+
+        accessorKey: "attributes.updatedAt",
+        header: "Published At",
+        meta: {
+          type: "datetime",
+        },
         footer: (props) => props.column.id,
       },
     ],
@@ -87,12 +118,7 @@ function App() {
   const fetchData = async (page = 0, limit = 10) => {
     const url = new URL("http://localhost:1337/api/employees");
 
-    if(filters && filters.value && filters.operator && filters.value){
-      // filters[username][$eq]=John
-    const op:string = filters?.operator as string ?? "";
-    url.searchParams.append(`filters[${filters.columnId}][${operators[op] ?? ""}]`, filters.value ??"");
 
-    }
 
     // pagination
     url.searchParams.append("pagination[page]", `${page + 1}`);
@@ -107,6 +133,14 @@ function App() {
         );
       });
     }
+    // simple filter
+    if (filters && filters.value && filters.operator && filters.value) {
+      const op: string = (filters?.operator as string) ?? "";
+      url.searchParams.append(
+        `filters[${filters.columnId}][${operators.get(op) ?? ""}]`,
+        filters.value ?? ""
+      );
+    }
 
     try {
       setLoading(true);
@@ -120,7 +154,7 @@ function App() {
   };
   useEffect(() => {
     fetchData(pageIndex, rowsPerPage);
-  }, [rowsPerPage, pageIndex, sort,filters]);
+  }, [rowsPerPage, pageIndex, sort, filters]);
 
   const tableOptions: TableOptions = {
     manualPagination: true,
@@ -141,10 +175,10 @@ function App() {
         setSort(sortObj);
       },
     },
-    filterOptions:{
+    filterOptions: {
       setFilters,
-      filters
-    }
+      filters,
+    },
   };
 
   return (
@@ -159,5 +193,6 @@ function App() {
     </Container>
   );
 }
+
 
 export default App;

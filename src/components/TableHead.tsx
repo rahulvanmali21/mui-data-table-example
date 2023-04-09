@@ -15,32 +15,32 @@ import {
 import Resizer from "./Resizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Filter from "./Filter";
-import ColumnSelection from "./ColumnSelection"
+import ColumnSelection from "./ColumnSelection";
 import useTableOptions from "../hooks/useTableOptions";
 import { SortOrder } from "../types/TableControl";
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-const SORTS:SortOrder[] = [undefined,"asc","desc"]
-
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import ColumnMenu from "./ColumnMenu";
+const SORTS: SortOrder[] = [undefined, "asc", "desc"];
 
 const TableHead = () => {
   const table = useTable();
   const tableOptions = useTableOptions();
 
-
-
-  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
+  const [anchorEl, setAnchorEl] = useState<
+    (EventTarget & HTMLButtonElement) | null
+  >(null);
   const [mainAnchor, setmainAnchor] = useState<Element | null>(null);
-  const [menuType, setMenuType] = useState<string | null>(null);
-  const [sorts,setSort] = useState<any>({})
+  const [menuType, setMenuType] = useState<any | null>(null);
+  const [sorts, setSort] = useState<any>({});
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
 
   const menuAnchor = useRef<HTMLTableRowElement>(null);
 
-
-
-  const manualSorting  = tableOptions?.manualSorting ?? false;
+  const manualSorting = tableOptions?.manualSorting ?? false;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, column: any) => {
+    setSelectedColumn(column.id);
     setAnchorEl(e.currentTarget);
   };
 
@@ -49,39 +49,34 @@ const TableHead = () => {
     setmainAnchor(menuAnchor?.current);
   };
 
-
-  const getIsSorted = (columnId:string) :SortOrder=>{
-    if(sorts[columnId]){
-      return sorts[columnId].order
+  const getIsSorted = (columnId: string): SortOrder => {
+    if (sorts[columnId]) {
+      return sorts[columnId].order;
     }
-    return undefined
-  }
-  
-  const getToggleSortingHandler = (columnId:any)=>{
-    let sortObj
-    if(!sorts[columnId] || !sorts[columnId].order){
-      sortObj = {[columnId]:{order:"asc"}}
-    }else if (sorts[columnId]?.order ==="asc"){
-      sortObj = {[columnId]:{order:"desc"}}
-    }else{
+    return undefined;
+  };
+
+  const getToggleSortingHandler = (columnId: any) => {
+    let sortObj;
+    if (!sorts[columnId] || !sorts[columnId].order) {
+      sortObj = { [columnId]: { order: "asc" } };
+    } else if (sorts[columnId]?.order === "asc") {
+      sortObj = { [columnId]: { order: "desc" } };
+    } else {
       const copy = structuredClone(sorts);
-      delete copy[columnId]
-      sortObj = copy
+      delete copy[columnId];
+      sortObj = copy;
     }
-    setSort(sortObj)
-    tableOptions?.sortingOptions?.onSort(sortObj)
-  }
-
-
-
-
+    setSort(sortObj);
+    tableOptions?.sortingOptions?.onSort(sortObj);
+  };
 
   return (
     <>
       <MuiTableHead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
+        {table.getHeaderGroups().map((headerGroup, ij) => (
+          <TableRow key={ij}>
+            {headerGroup.headers.map((header, i) => (
               <TableCell
                 variant="head"
                 title={header.id}
@@ -92,7 +87,7 @@ const TableHead = () => {
                   width: header.getSize(),
                   position: "relative",
                 }}
-                key={header.id}
+                key={i}
               >
                 {header.isPlaceholder ? null : (
                   <Box
@@ -100,30 +95,51 @@ const TableHead = () => {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    {
-                      tableOptions?.filterOptions.filters?.columnId === header.column.id && (
-                        <FilterAltIcon sx={{cursor:"pointer"}} onClick={()=> tableOptions?.filterOptions.setFilters(null)} fontSize="small" color="primary" />
-                      )
-                    }
+                    {tableOptions?.filterOptions.filters?.columnId ===
+                      header.column.id && (
+                      <FilterAltIcon
+                        sx={{ cursor: "pointer" }}
+                        onClick={() =>
+                          tableOptions?.filterOptions.setFilters(null)
+                        }
+                        fontSize="small"
+                        color="primary"
+                      />
+                    )}
 
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getCanSort() && (
-                        <TableSortLabel
-                          sx={{marginRight:"auto"}}
-                          active={manualSorting ? !!getIsSorted(header.column.id) : !!header.column.getIsSorted()}
-                          onClick={manualSorting ? ()=>getToggleSortingHandler(header.column.id) : header.column.getToggleSortingHandler()}
-                          direction={manualSorting ? getIsSorted(header.column.id) : header.column.getIsSorted() || undefined}
-                        />
-                      )}
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getCanSort() && (
+                      <TableSortLabel
+                        sx={{ marginRight: "auto" }}
+                        active={
+                          manualSorting
+                            ? !!getIsSorted(header.column.id)
+                            : !!header.column.getIsSorted()
+                        }
+                        onClick={
+                          manualSorting
+                            ? () => getToggleSortingHandler(header.column.id)
+                            : header.column.getToggleSortingHandler()
+                        }
+                        direction={
+                          manualSorting
+                            ? getIsSorted(header.column.id)
+                            : header.column.getIsSorted() || undefined
+                        }
+                      />
+                    )}
                     {header.id !== "select" && (
                       <IconButton
                         size="small"
                         onClick={(e) => handleClick(e, header.column)}
                       >
-                        <MoreVertIcon sx={(theme)=>({fill:theme.palette.divider})} fontSize="small" />
+                        <MoreVertIcon
+                          sx={(theme) => ({ fill: theme.palette.divider })}
+                          fontSize="small"
+                        />
                       </IconButton>
                     )}
                   </Box>
@@ -148,13 +164,24 @@ const TableHead = () => {
               open={!!mainAnchor}
               onClose={(e) => setmainAnchor(null)}
             >
-              {menuType === "filters" && <Filter/>}
-              {menuType === "columns" && <ColumnSelection/> }
+              {menuType === "filters" && (
+                <Filter selectedColumn={selectedColumn} />
+              )}
+              {menuType === "columns" && <ColumnSelection />}
             </Popover>
           </td>
         </tr>
       </MuiTableHead>
-      <Menu
+      <ColumnMenu
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        onMenuClick={(type: string) => {
+          showCommonMenu(type);
+          setAnchorEl(null);
+        }}
+        selectedColumnId={selectedColumn}
+      />
+      {/* <Menu
         anchorEl={anchorEl}
         open={!!anchorEl}
         onClose={() => setAnchorEl(null)}
@@ -177,7 +204,7 @@ const TableHead = () => {
         >
           Filters
         </MenuItem>
-      </Menu>
+      </Menu> */}
     </>
   );
 };
