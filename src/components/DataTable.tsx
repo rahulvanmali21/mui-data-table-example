@@ -43,7 +43,6 @@ const DataTable = (props: DataTableProp) => {
 
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
-  console.log({columnPinning,columnOrder,columnVisibility})
   const table = useReactTable({
     data: props.data ?? [],
     columns: [rowSelectionOption, ...props.columns],
@@ -58,12 +57,18 @@ const DataTable = (props: DataTableProp) => {
     onSortingChange: setSorting,
     columnResizeMode: "onChange",
     enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (row) => {
+      console.log({ row });
+      setRowSelection(row);
+    },
+    onPaginationChange: () => {
+      props.tableOptions?.manualPagination && setRowSelection({});
+    },
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex,
-    manualPagination: true,
+    manualPagination: props.tableOptions?.manualPagination,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
     onColumnPinningChange: setColumnPinning,
