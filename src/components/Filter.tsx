@@ -21,9 +21,13 @@ declare module '@tanstack/table-core' {
   }
 
 
-const Filter = () => {
+type Props ={
+  selectedColumnId?:string | null
+}
+
+const Filter = ({selectedColumnId}:Props) => {
   const table = useTable();
-  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(selectedColumnId ?? "");
   const [operator, setOperator] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 

@@ -165,7 +165,7 @@ const TableHead = () => {
               onClose={(e) => setmainAnchor(null)}
             >
               {menuType === "filters" && (
-                <Filter selectedColumn={selectedColumn} />
+                <Filter selectedColumnId={selectedColumn} />
               )}
               {menuType === "columns" && <ColumnSelection />}
             </Popover>
