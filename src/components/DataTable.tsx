@@ -11,6 +11,7 @@ import {
   SortingState,
   RowData,
   VisibilityState,
+  getExpandedRowModel,
 } from "@tanstack/react-table";
 
 import { TableContext } from "../TableContext";
@@ -23,6 +24,7 @@ import { defaultColumn } from "./DefaultColumn";
 import { rowSelectionOption } from "./RowSelection";
 import { DataTableProp } from "../types/TableControl";
 import { TableOptionContext } from "../TableOptionContext";
+import { RowExpander } from "./ExpanderColumn";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -41,11 +43,23 @@ const DataTable = (props: DataTableProp) => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
 
-  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
 
+  const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
+  let columns = [rowSelectionOption, ...props.columns];
+
+
+  if(props.tableOptions?.subComponentOptions){
+    if(props.tableOptions?.subComponentOptions.position === "start"){
+      columns = [RowExpander,...columns]
+    }else{
+      columns.push(RowExpander)
+    }
+  }
+
+  
   const table = useReactTable({
     data: props.data ?? [],
-    columns: [rowSelectionOption, ...props.columns],
+    columns: columns,
     defaultColumn,
     state: {
       rowSelection,
@@ -54,11 +68,11 @@ const DataTable = (props: DataTableProp) => {
       columnOrder,
       columnPinning,
     },
+    getRowCanExpand: () => true,
     onSortingChange: setSorting,
     columnResizeMode: "onChange",
     enableRowSelection: true,
     onRowSelectionChange: (row) => {
-      console.log({ row });
       setRowSelection(row);
     },
     onPaginationChange: () => {
@@ -66,6 +80,7 @@ const DataTable = (props: DataTableProp) => {
     },
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex,
     manualPagination: props.tableOptions?.manualPagination,

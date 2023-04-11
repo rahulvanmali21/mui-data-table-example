@@ -1,37 +1,53 @@
 import { flexRender } from "@tanstack/react-table";
 import React from "react";
 import { useTable } from "../TableContext";
-import {
-  TableRow,
-  TableBody as MuiTableBody,
-} from "@mui/material";
+import { TableRow, TableBody as MuiTableBody } from "@mui/material";
 import LoadingComponent from "./LoadingComponent";
 import TableCell from "./ui/TableCell";
+import Collapse from "@mui/material/Collapse";
+import useTableOptions from "../hooks/useTableOptions";
 
 const TableBody = ({ loading }: { loading: boolean }) => {
   const table = useTable();
+  const tableOptions = useTableOptions();
+
+  const SubComponent =tableOptions?.subComponentOptions?.component || null;
+
+
   if (loading) {
     return <LoadingComponent />;
   }
 
   return (
     <MuiTableBody>
-      {table.getRowModel().rows.map((row,i) => (
-        <TableRow hover key={i}>
-          {row.getVisibleCells().map((cell, j) => {
-            const pinned = cell.column.getIsPinned()
-            return (
+      {table.getRowModel().rows.map((row, i) => (
+        <React.Fragment key={i}>
+          <TableRow hover>
+            {row.getVisibleCells().map((cell, j) => {
+              const pinned = cell.column.getIsPinned();
+              return (
+                <TableCell
+                  size="small"
+                  key={j}
+                  pinned={pinned ?? false}
+                  padding={j === 0 ? "checkbox" : "normal"}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              );
+            })}
+          </TableRow>
+          <TableRow>
             <TableCell
-              size="small"
-              key={j}
-              pinned={pinned ?? false}
-              padding={j === 0 ? "checkbox" : "normal"}
+              sx={{ pb: 0, pt: 0 ,border:0 }}
+              colSpan={row.getVisibleCells().length}
             >
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              <Collapse in={row.getIsExpanded()} timeout="auto" unmountOnExit>
+                {SubComponent ? <SubComponent row={row}/> : ""}
+              </Collapse>
             </TableCell>
-            )
-          })}
-        </TableRow>
+          </TableRow>
+        </React.Fragment>
       ))}
     </MuiTableBody>
   );
