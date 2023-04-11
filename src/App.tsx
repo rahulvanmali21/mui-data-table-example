@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import DataTable from "./components/DataTable";
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
 import { Filter, TableOptions } from "./types/TableControl";
 
@@ -174,6 +174,16 @@ function App() {
       onSort: (sortObj: any) => {
         setSort(sortObj);
       },
+    },
+    subComponentOptions:{
+      position:"end",
+      component:({row})=><Box paddingX={3} paddingY={4}>
+        <pre>
+        {
+          JSON.stringify(row?.original,null,2)
+        }
+        </pre>
+      </Box>
     },
     filterOptions: {
       setFilters,

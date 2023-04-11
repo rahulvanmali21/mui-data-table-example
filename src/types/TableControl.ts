@@ -28,13 +28,21 @@ export type Filter = {
     value:string | null
 }
 
+export type SubComponentOptions = {
+    component:React.ComponentType<any>,
+    position: "start" | "end",
+    onOpen?:(...args:any)=>void
+    onClose?:()=>void
+}
+
 
 export type TableOptions = {
     manualPagination?:boolean,
     manualSorting?:boolean,
-    paginationOption?:PaginationOptions
-    sortingOptions?:SortingOptions
-    filterOptions:FilterOptions
+    paginationOption?:PaginationOptions,
+    sortingOptions?:SortingOptions,
+    filterOptions:FilterOptions,
+    subComponentOptions?:SubComponentOptions
 }
 
 

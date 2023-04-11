@@ -131,7 +131,7 @@ const TableHead = () => {
                         }
                       />
                     )}
-                    {header.id !== "select" && (
+                    {header.id !== "select" && header.id !== "expander" && (
                       <IconButton
                         size="small"
                         onClick={(e) => handleClick(e, header.column)}
@@ -145,13 +145,15 @@ const TableHead = () => {
                   </Box>
                 )}
 
-                <Resizer
-                  {...{
-                    onMouseDown: header.getResizeHandler(),
-                    onTouchStart: header.getResizeHandler(),
-                    resizing: header.column.getIsResizing(),
-                  }}
-                />
+                {header.id !== "select" && header.id !== "expander" && (
+                  <Resizer
+                    {...{
+                      onMouseDown: header.getResizeHandler(),
+                      onTouchStart: header.getResizeHandler(),
+                      resizing: header.column.getIsResizing(),
+                    }}
+                  />
+                )}
               </TableCell>
             ))}
           </TableRow>
