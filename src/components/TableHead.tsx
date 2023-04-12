@@ -2,7 +2,6 @@ import React, { RefObject, useRef, useState } from "react";
 import { useTable } from "../TableContext";
 import { flexRender } from "@tanstack/react-table";
 import {
-  TableCell,
   TableRow,
   TableHead as MuiTableHead,
   Box,
@@ -21,6 +20,8 @@ import { SortOrder } from "../types/TableControl";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import ColumnMenu from "./ColumnMenu";
+import usePinColumn from "../hooks/usePinColumn";
+import TableCell from "./ui/TableCell";
 const SORTS: SortOrder[] = [undefined, "asc", "desc"];
 
 const TableHead = () => {
@@ -38,6 +39,8 @@ const TableHead = () => {
   const menuAnchor = useRef<HTMLTableRowElement>(null);
 
   const manualSorting = tableOptions?.manualSorting ?? false;
+
+  const { getColumnOffset } = usePinColumn();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>, column: any) => {
     setSelectedColumn(column.id);
@@ -76,90 +79,99 @@ const TableHead = () => {
       <MuiTableHead>
         {table.getHeaderGroups().map((headerGroup, ij) => (
           <TableRow key={ij}>
-            {headerGroup.headers.map((header, i) => (
-              <TableCell
-                variant="head"
-                title={header.id}
-                padding={header.id === "select" ? "checkbox" : "normal"}
-                component="th"
-                colSpan={header.colSpan}
-                sx={{
-                  width: header.getSize(),
-                  position: "relative",
-                }}
-                key={i}
-              >
-                {header.isPlaceholder ? null : (
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    {tableOptions?.filterOptions.filters?.columnId ===
-                      header.column.id && (
-                      <FilterAltIcon
-                        sx={{ cursor: "pointer" }}
-                        onClick={() =>
-                          tableOptions?.filterOptions.setFilters(null)
-                        }
-                        fontSize="small"
-                        color="primary"
-                      />
-                    )}
-
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {header.column.getCanSort() && (
-                      <TableSortLabel
-                        sx={{ marginRight: "auto" }}
-                        active={
-                          manualSorting
-                            ? !!getIsSorted(header.column.id)
-                            : !!header.column.getIsSorted()
-                        }
-                        onClick={
-                          manualSorting
-                            ? () => getToggleSortingHandler(header.column.id)
-                            : header.column.getToggleSortingHandler()
-                        }
-                        direction={
-                          manualSorting
-                            ? getIsSorted(header.column.id)
-                            : header.column.getIsSorted() || undefined
-                        }
-                      />
-                    )}
-                    {header.id !== "select" && header.id !== "expander" && (
-                      <IconButton
-                        size="small"
-                        onClick={(e) => handleClick(e, header.column)}
-                      >
-                        <MoreVertIcon
-                          sx={(theme) => ({ fill: theme.palette.divider })}
+            {headerGroup.headers.map((header, i) => {
+              const pinned = header.column.getIsPinned();
+              return (
+                <TableCell
+                  variant="head"
+                  title={header.id}
+                  padding={header.id === "select" ? "checkbox" : "normal"}
+                  component="th"
+                  colSpan={header.colSpan}
+                  sx={{
+                    minWidth: header.getSize(),
+                  }}
+                  key={i}
+                  pinned={pinned ?? false}
+                  offset={pinned ? getColumnOffset(header.column.id,pinned) : null
+                  }
+                >
+                  <Box width={"100%"} height={"100%"} position={"relative"}>
+                  {header.isPlaceholder ? null : (
+                    <Box
+                      display="flex"
+                      justifyContent={
+                        header.id === "select" ? "center" : "space-between"
+                      }
+                      alignItems="center"
+                    >
+                      {tableOptions?.filterOptions.filters?.columnId ===
+                        header.column.id && (
+                        <FilterAltIcon
+                          sx={{ cursor: "pointer" }}
+                          onClick={() =>
+                            tableOptions?.filterOptions.setFilters(null)
+                          }
                           fontSize="small"
+                          color="primary"
                         />
-                      </IconButton>
-                    )}
-                  </Box>
-                )}
+                      )}
 
-                {header.id !== "select" && header.id !== "expander" && (
-                  <Resizer
-                    {...{
-                      onMouseDown: header.getResizeHandler(),
-                      onTouchStart: header.getResizeHandler(),
-                      resizing: header.column.getIsResizing(),
-                    }}
-                  />
-                )}
-              </TableCell>
-            ))}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {header.column.getCanSort() && (
+                        <TableSortLabel
+                          sx={{ marginRight: "auto" }}
+                          active={
+                            manualSorting
+                              ? !!getIsSorted(header.column.id)
+                              : !!header.column.getIsSorted()
+                          }
+                          onClick={
+                            manualSorting
+                              ? () => getToggleSortingHandler(header.column.id)
+                              : header.column.getToggleSortingHandler()
+                          }
+                          direction={
+                            manualSorting
+                              ? getIsSorted(header.column.id)
+                              : header.column.getIsSorted() || undefined
+                          }
+                        />
+                      )}
+                      {header.id !== "select" && header.id !== "expander" && (
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleClick(e, header.column)}
+                        >
+                          <MoreVertIcon
+                            sx={(theme) => ({ fill: theme.palette.divider })}
+                            fontSize="small"
+                          />
+                        </IconButton>
+                      )}
+                    </Box>
+                  )}
+
+                  {/* {header.id !== "select" && header.id !== "expander" && ( */}
+                    <Resizer
+                      {...{
+                        onMouseDown: header.getResizeHandler(),
+                        onTouchStart: header.getResizeHandler(),
+                        resizing: header.column.getIsResizing(),
+                      }}
+                    />
+                  {/* )} */}
+                  </Box>
+                </TableCell>
+              );
+            })}
           </TableRow>
         ))}
         <tr ref={menuAnchor}>
-          <td>
+          <td style={{ padding: 0 }}>
             <Popover
               disablePortal
               anchorEl={mainAnchor}

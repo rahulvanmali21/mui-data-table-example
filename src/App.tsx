@@ -39,6 +39,8 @@ function App() {
         accessorKey: "attributes.first_name",
         header: () => <span>First Name</span>,
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "last_name",
@@ -46,6 +48,8 @@ function App() {
         accessorKey: "attributes.last_name",
         header: () => <span>Last Name</span>,
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "email",
@@ -53,6 +57,8 @@ function App() {
         accessorKey: "attributes.email",
         header: () => "Email",
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "views",
@@ -63,6 +69,8 @@ function App() {
           type: "number",
         },
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "dob",
@@ -73,6 +81,8 @@ function App() {
           type: "date",
         },
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "createdAt",
@@ -83,6 +93,8 @@ function App() {
           type: "datetime",
         },
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "updatedAt",
@@ -93,6 +105,8 @@ function App() {
           type: "datetime",
         },
         footer: (props) => props.column.id,
+        
+        size:200,
       },
       {
         id: "updatedAt",
@@ -103,6 +117,8 @@ function App() {
           type: "datetime",
         },
         footer: (props) => props.column.id,
+        
+        size:200,
       },
     ],
     []
@@ -176,7 +192,7 @@ function App() {
       },
     },
     subComponentOptions:{
-      position:"end",
+      position:"start",
       component:({row})=><Box paddingX={3} paddingY={4}>
         <pre>
         {

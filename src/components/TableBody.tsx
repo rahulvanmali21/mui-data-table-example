@@ -1,11 +1,12 @@
 import { flexRender } from "@tanstack/react-table";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTable } from "../TableContext";
 import { TableRow, TableBody as MuiTableBody } from "@mui/material";
 import LoadingComponent from "./LoadingComponent";
 import TableCell from "./ui/TableCell";
 import Collapse from "@mui/material/Collapse";
 import useTableOptions from "../hooks/useTableOptions";
+import usePinColumn from "../hooks/usePinColumn";
 
 const TableBody = ({ loading }: { loading: boolean }) => {
   const table = useTable();
@@ -13,6 +14,11 @@ const TableBody = ({ loading }: { loading: boolean }) => {
 
   const SubComponent =tableOptions?.subComponentOptions?.component || null;
 
+
+  const {getColumnOffset} = usePinColumn();
+
+
+  
 
   if (loading) {
     return <LoadingComponent />;
@@ -31,6 +37,7 @@ const TableBody = ({ loading }: { loading: boolean }) => {
                   key={j}
                   pinned={pinned ?? false}
                   padding={j === 0 ? "checkbox" : "normal"}
+                  offset={pinned ? getColumnOffset(cell.column.id,pinned) : null}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>

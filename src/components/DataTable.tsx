@@ -101,14 +101,16 @@ const DataTable = (props: DataTableProp) => {
       <TableOptionContext.Provider value={props.tableOptions}>
         <TableContainer
           component={Paper}
+          variant="outlined"
           sx={{ maxWidth: "100%", overflowX: "auto" }}
         >
-          <MuiTable sx={{ minWidth: "100%" }}>
+          <MuiTable sx={{width:`clamp(100%,${table.getCenterTotalSize()}px,600%)`}}>
             <TableHead />
             <TableBody loading={props.loading ?? false} />
           </MuiTable>
-          <TablePagination />
         </TableContainer>
+        <TablePagination />
+
       </TableOptionContext.Provider>
     </TableContext.Provider>
   );

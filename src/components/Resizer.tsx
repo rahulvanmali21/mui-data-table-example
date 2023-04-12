@@ -11,15 +11,15 @@ type InputProps = {
 
 const Resizer = styled(Box)<InputProps>(({theme})=>({
     position: "absolute",
-    right: 0,
+    right: "-2%",
     top: "50%",
-    height: "40%",
+    height: "70%",
     maxHeight:"22px",
     transform:"translateY(-50%)",
     width: "2px",
     background: theme.palette.divider,
     cursor: "col-resize",
-    userAelect: "none",
+    userSelect: "none",
     touchAction: "none",
     "&:hover":{
         opacity:1,
