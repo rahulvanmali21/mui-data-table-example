@@ -104,7 +104,7 @@ const DataTable = (props: DataTableProp) => {
           variant="outlined"
           sx={{ maxWidth: "100%", overflowX: "auto" }}
         >
-          <MuiTable sx={{width:`clamp(100%,${table.getCenterTotalSize()}px,600%)`}}>
+          <MuiTable stickyHeader sx={{width:`clamp(100%,${table.getCenterTotalSize()}px,600%)`}}>
             <TableHead />
             <TableBody loading={props.loading ?? false} />
           </MuiTable>

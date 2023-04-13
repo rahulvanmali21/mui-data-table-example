@@ -38,7 +38,8 @@ const Filter = ({selectedColumnId}:Props) => {
 
   const tableOptions = useTableOptions()
   
-  const type = selectedColumn ? table.getColumn(selectedColumn)?.columnDef?.meta?.type : "text";
+  let type = selectedColumn ? table.getColumn(selectedColumn)?.columnDef?.meta?.type : "text";
+   type = type === "datetime" ? "datetime-local" : type; 
   const filter = tableOptions?.filterOptions.filters ?? null;
 
   useEffect(()=>{
@@ -56,7 +57,7 @@ const Filter = ({selectedColumnId}:Props) => {
         if(colDef?.meta?.type ==="number"){
             return NUMBERIC_OPERATOR;
         }
-        if(colDef?.meta?.type ==="date"){
+        if(colDef?.meta?.type ==="date" || colDef?.meta?.type ==="datetime"){
             return DATE_OPERATOR;
         }
         return STRING_OPERATOR;
@@ -84,7 +85,9 @@ const Filter = ({selectedColumnId}:Props) => {
       <Grid container columnSpacing={2} columns={10} alignItems="flex-end">
         <Grid item xs={3}>
           <FormControl fullWidth>
-            <InputLabel variant="standard">column</InputLabel>
+            <InputLabel variant="standard" 
+              shrink={true}
+            >column</InputLabel>
             <NativeSelect
               value={selectedColumn}
               onChange={(e) => setSelectedColumn(e.target.value)}
@@ -97,7 +100,7 @@ const Filter = ({selectedColumnId}:Props) => {
 
               {table
                 .getAllLeafColumns()
-                .filter((c) => c.id !== "select")
+                .filter((c) => c.id !== "select" &&  c.id !== "expander")
                 .map((column, cid) => (
                   <option key={cid} value={column.id}>{column.id}</option>
                 ))}
