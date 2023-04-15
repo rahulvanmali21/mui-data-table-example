@@ -90,7 +90,7 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
           <Button onClick={addFilters} disabled={!canAddFilter} size="small">
             Add Filters
           </Button>
-          <Button size="small" onClick={applyFilter}>
+          <Button size="small" disabled={!filters.at(-1).value} onClick={applyFilter}>
             Apply
           </Button>
           <Button size="small">
@@ -106,8 +106,7 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
 export default ComplexFilter;
 
 const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
-  const [selectedColumn, setSelectedColumn] = useState<string | null>("");
-  const [operator, setOperator] = useState<string | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(filter.setSelectedColumn ?? "");
   const [value, setValue] = useState<string | null>(null);
   const table = useTable();
   const columnnIdRef = useRef<HTMLSelectElement>();
@@ -133,6 +132,9 @@ const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
       (op) => !filterColumn?.has(selectedColumn + "-" + op)
     );
   }, [selectedColumn]);
+
+  const [operator, setOperator] = useState<string | null>(operators?.[0] ?? "") ;
+
 
   useEffect(() => {
     if (selectedColumn && operator && value) {
