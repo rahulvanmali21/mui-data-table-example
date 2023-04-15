@@ -22,7 +22,7 @@ import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import ColumnMenu from "./ColumnMenu";
 import usePinColumn from "../hooks/usePinColumn";
 import TableCell from "./ui/TableCell";
-const SORTS: SortOrder[] = [undefined, "asc", "desc"];
+import ComplexFilter from "./ui/ComplexFilter.tsx/ComplexFilter";
 
 const TableHead = () => {
   const table = useTable();
@@ -182,10 +182,18 @@ const TableHead = () => {
               open={!!mainAnchor}
               onClose={(e) => setmainAnchor(null)}
             >
-              {menuType === "filters" && (
-                <Filter selectedColumnId={selectedColumn} />
-              )}
-              {menuType === "columns" && <ColumnSelection />}
+              {
+                (()=>{
+                  switch (menuType) {
+                    case "filters":
+                      return <Filter selectedColumnId={selectedColumn} />
+                    case "columns":
+                      return <ColumnSelection />                    
+                    case "complex_filters":
+                      return <ComplexFilter selectedColumnId={selectedColumn} />
+                  }
+                })()
+              }
             </Popover>
           </td>
         </tr>
@@ -199,30 +207,7 @@ const TableHead = () => {
         }}
         selectedColumnId={selectedColumn}
       />
-      {/* <Menu
-        anchorEl={anchorEl}
-        open={!!anchorEl}
-        onClose={() => setAnchorEl(null)}
-      >
-        <MenuItem
-          dense
-          onClick={() => {
-            setAnchorEl(null);
-            showCommonMenu("columns");
-          }}
-        >
-          Manange Columns
-        </MenuItem>
-        <MenuItem
-          dense
-          onClick={() => {
-            setAnchorEl(null);
-            showCommonMenu("filters");
-          }}
-        >
-          Filters
-        </MenuItem>
-      </Menu> */}
+      
     </>
   );
 };

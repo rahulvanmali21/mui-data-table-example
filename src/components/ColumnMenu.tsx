@@ -41,6 +41,13 @@ const ColumnMenu = ({
         <ListItemText>Filters</ListItemText>
       </MenuItem>
 
+      <MenuItem dense onClick={() => onMenuClick("complex_filters")}>
+        <ListItemIcon>
+          <FilterAltIcon />
+        </ListItemIcon>
+        <ListItemText>Complex Filters</ListItemText>
+      </MenuItem>
+
       <Divider />
 
       {column?.getIsPinned() && (
