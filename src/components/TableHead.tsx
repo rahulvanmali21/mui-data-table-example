@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Popover,
+  LinearProgress,
 } from "@mui/material";
 import Resizer from "./Resizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -74,7 +75,7 @@ const TableHead = () => {
     tableOptions?.sortingOptions?.onSort(sortObj);
   };
   const headRef = useRef<any>();
-
+  const loading = tableOptions?.loading ?? false;
 
   return (
     <>
@@ -175,7 +176,8 @@ const TableHead = () => {
           </TableRow>
         ))}
         <tr ref={menuAnchor}>
-          <td style={{ padding: 0 }}>
+          <td style={{ padding: 0 }} colSpan={table.getAllLeafColumns().length}>
+          {loading && <LinearProgress />}
             <Popover
               disablePortal
               anchorEl={mainAnchor}
@@ -199,30 +201,6 @@ const TableHead = () => {
         }}
         selectedColumnId={selectedColumn}
       />
-      {/* <Menu
-        anchorEl={anchorEl}
-        open={!!anchorEl}
-        onClose={() => setAnchorEl(null)}
-      >
-        <MenuItem
-          dense
-          onClick={() => {
-            setAnchorEl(null);
-            showCommonMenu("columns");
-          }}
-        >
-          Manange Columns
-        </MenuItem>
-        <MenuItem
-          dense
-          onClick={() => {
-            setAnchorEl(null);
-            showCommonMenu("filters");
-          }}
-        >
-          Filters
-        </MenuItem>
-      </Menu> */}
     </>
   );
 };

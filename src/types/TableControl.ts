@@ -43,13 +43,14 @@ export type TableOptions = {
     sortingOptions?:SortingOptions,
     filterOptions:FilterOptions,
     subComponentOptions?:SubComponentOptions
+    loading?:boolean
+    showFooter?:boolean
 }
 
 
 export interface DataTableProp {
     columns:ColumnDef<any,any>[],
     data?:any[],
-    loading?:boolean
     onCellUpdate:(v:any)=>void
     tableOptions?:TableOptions,
 }

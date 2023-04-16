@@ -1,5 +1,5 @@
 import React from 'react'
-import {TablePagination as MUITablePagination} from '@mui/material';
+import {LinearProgress, TablePagination as MUITablePagination} from '@mui/material';
 import { Table } from '@tanstack/react-table';
 import useTable from '../hooks/useTable';
 import useTableOptions from '../hooks/useTableOptions';
@@ -16,6 +16,8 @@ const TablePagination = (props: Props) => {
     const gotoPage = options?.manualPagination ? options?.paginationOption?.gotoPage : table.setPageIndex;
     const onRowsPerPageChange = options?.manualPagination ?  options?.paginationOption?.onRowsPerPageChange : table.setPageSize
   return (
+    <>
+    {/* <LinearProgress /> */}
     <MUITablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -25,7 +27,7 @@ const TablePagination = (props: Props) => {
           onPageChange={(e,page)=>  gotoPage?.(page)}
           onRowsPerPageChange={(e)=>{onRowsPerPageChange?.(parseInt(e.target.value, 10))}}
         />
-
+  </>
   )
 }
 

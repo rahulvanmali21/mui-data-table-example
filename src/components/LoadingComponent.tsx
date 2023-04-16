@@ -1,18 +1,28 @@
-import { Box, CircularProgress, TableBody, TableCell, TableRow } from '@mui/material'
+import { Box, CircularProgress, Skeleton, TableBody, TableCell, TableRow } from '@mui/material'
 import React from 'react'
 import useTable from '../hooks/useTable'
 
 const LoadingComponent = () => {
     const table = useTable()
+    const pageSize = table.getState().pagination.pageSize
+    const columns = table
+      .getAllLeafColumns()
+    
   return (
     <TableBody>
-        <TableRow>
-            <TableCell colSpan={table.getAllLeafColumns().length} >
-                <Box width="100%" height="200px" display="flex" alignItems="center" justifyContent="center">
-                    <CircularProgress/>
-                </Box>
-            </TableCell>
-        </TableRow>
+        {
+            Array(pageSize ?? 0).fill(0).map((_,i)=>(
+                <TableRow key={i}>
+
+                {columns.map((col)=>(
+                    <TableCell key={col.id} >
+                        <Skeleton width={Math.round(col.getSize() * 0.85)}/>
+                    </TableCell>
+                ))}
+                </TableRow>
+            ))
+        }
+
       </TableBody>
   )
 }
