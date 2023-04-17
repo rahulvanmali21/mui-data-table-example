@@ -25,6 +25,7 @@ import { rowSelectionOption } from "./RowSelection";
 import { DataTableProp } from "../types/TableControl";
 import { TableOptionContext } from "../TableOptionContext";
 import { RowExpander } from "./ExpanderColumn";
+import TableFooter from "./TableFooter";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -34,7 +35,6 @@ declare module "@tanstack/react-table" {
 }
 
 const DataTable = (props: DataTableProp) => {
-  //   const [data, setData] = React.useState<Person[]>(makeData(311));
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -106,7 +106,8 @@ const DataTable = (props: DataTableProp) => {
         >
           <MuiTable stickyHeader sx={{width:`clamp(100%,${table.getCenterTotalSize()}px,600%)`}}>
             <TableHead />
-            <TableBody loading={props.loading ?? false} />
+            <TableBody/>
+            <TableFooter/>
           </MuiTable>
         </TableContainer>
         <TablePagination />

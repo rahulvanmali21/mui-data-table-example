@@ -9,7 +9,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DATE_OPERATOR,
   NUMBERIC_OPERATOR,
@@ -26,20 +26,22 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
   const tableOptions = useTableOptions();
   const filter = tableOptions?.filterOptions.filters ?? null;
 
-
   useEffect(() => {
     return () => filterColumn.clear();
-  }, [])
+  }, []);
 
   useEffect(() => {
+    console.log({ arr: filter });
     if (Array.isArray(filter)) {
       setfilters(filter);
     }
   }, [filter]);
 
-  const [filters, setfilters] = useState<any[]>([
-    { selectedColumn: selectedColumnId ?? "", operator: "", value: "" },
-  ]);
+  const [filters, setfilters] = useState<any[]>(
+    filter && Array.isArray(filter)
+      ? filter
+      : [{ selectedColumn: selectedColumnId ?? "", operator: "", value: "" }]
+  );
   const addFilters = () => {
     if (setfilters.length >= MAX_FILTERS) return;
     setfilters((s) => [...s, {}]);
@@ -54,9 +56,9 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
     );
   };
 
-  const applyFilter = ()=>{
+  const applyFilter = () => {
     tableOptions?.filterOptions.setFilters(filters);
-  }
+  };
   const removeFilter = (index: number) => {
     if (index !== 0) {
       setfilters((s) => s.filter((_, i) => i !== index));
@@ -68,34 +70,40 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
     return false;
   }, [filters]);
 
+  const width = filters.length > 1 ? 700 : 600;
+
   return (
-    <Box sx={{ maxWidth: 600, p: 2, width: 600 }}>
+    <Box sx={{ maxWidth: width, p: 2, width: width }}>
       <Grid
         container
         columnSpacing={2}
         rowSpacing={2}
-        columns={10}
+        columns={filters.length > 1 ? 12 : 10}
         alignItems="flex-end"
       >
-        {filters.map((filter, index) => (
+        {filters.map((filter, index, arr) => (
           <FilterForm
             filter={filter}
             setFilter={(filter: any) => handleFilters(index, filter)}
             keys={index}
+            index={index}
+            count={arr.length}
             removeFilter={() => removeFilter(index)}
           />
         ))}
         <Grid item xs={10}>
-            <Stack direction="row" gap={3}>
-          <Button onClick={addFilters} disabled={!canAddFilter} size="small">
-            Add Filters
-          </Button>
-          <Button size="small" disabled={!filters.at(-1).value} onClick={applyFilter}>
-            Apply
-          </Button>
-          <Button size="small">
-            Reset
-          </Button>
+          <Stack direction="row" gap={3}>
+            <Button onClick={addFilters} disabled={!canAddFilter} size="small">
+              Add Filters
+            </Button>
+            <Button
+              size="small"
+              disabled={!filters.at(-1).value}
+              onClick={applyFilter}
+            >
+              Apply
+            </Button>
+            <Button size="small">Reset</Button>
           </Stack>
         </Grid>
       </Grid>
@@ -105,9 +113,12 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
 
 export default ComplexFilter;
 
-const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
-  const [selectedColumn, setSelectedColumn] = useState<string | null>(filter.setSelectedColumn ?? "");
-  const [value, setValue] = useState<string | null>(null);
+const FilterForm = ({ filter, setFilter, removeFilter, index, count }: any) => {
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(
+    filter.setSelectedColumn ?? ""
+  );
+  const [value, setValue] = useState<string | null>(filter.value ?? null);
+  const [logicOperator, setLogicOperator] = useState<string | null>(null);
   const table = useTable();
   const columnnIdRef = useRef<HTMLSelectElement>();
   let type = selectedColumn
@@ -127,14 +138,12 @@ const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
         newOperator = DATE_OPERATOR;
       }
     }
-    // console.log(newOperator)
     return newOperator.filter(
       (op) => !filterColumn?.has(selectedColumn + "-" + op)
     );
   }, [selectedColumn]);
 
-  const [operator, setOperator] = useState<string | null>(operators?.[0] ?? "") ;
-
+  const [operator, setOperator] = useState<string | null>(operators?.[0] ?? "");
 
   useEffect(() => {
     if (selectedColumn && operator && value) {
@@ -142,12 +151,41 @@ const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
         selectedColumn,
         operator,
         value,
+        logicOperator,
       });
     }
-  }, [selectedColumn, operator, value]);
+  }, [selectedColumn, operator, value, logicOperator]);
 
   return (
     <>
+      <Grid item xs={1}>
+        <IconButton
+          size="small"
+          onClick={removeFilter}
+          sx={{ textTransform: "unset" }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Grid>
+      {count > 1 && (
+        <Grid item xs={2}>
+          {index > 0 && (
+            <NativeSelect
+              value={logicOperator}
+              fullWidth
+              onChange={(e) => setLogicOperator(e.target.value)}
+            >
+              <option value="">select </option>
+
+              {["and", "or"].map((column, cid) => (
+                <option value={column} key={cid}>
+                  {column}
+                </option>
+              ))}
+            </NativeSelect>
+          )}
+        </Grid>
+      )}
       <Grid item xs={3}>
         <FormControl fullWidth>
           <InputLabel variant="standard" shrink={true}>
@@ -156,12 +194,13 @@ const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
           <NativeSelect
             value={selectedColumn}
             onChange={(e) => setSelectedColumn(e.target.value)}
-            defaultValue={30}
             inputRef={columnnIdRef}
             inputProps={{
               name: "columnId",
             }}
           >
+            <option value="">select column </option>
+
             {table
               .getAllLeafColumns()
               .filter((c) => c.id !== "select" && c.id !== "expander")
@@ -175,15 +214,17 @@ const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
       </Grid>
       <Grid item xs={3}>
         <FormControl fullWidth>
-          <InputLabel variant="standard">operator</InputLabel>
+          <InputLabel variant="standard" shrink={true}>
+            operator
+          </InputLabel>
           <NativeSelect
             onChange={(e) => setOperator(e.target.value)}
             value={operator}
-            defaultValue={30}
             inputProps={{
               name: "operator",
             }}
           >
+            <option value="">select operator</option>
             {operators.map((column, cid) => (
               <option value={column} key={cid}>
                 {column}
@@ -201,11 +242,6 @@ const FilterForm = ({ filter, setFilter, removeFilter }: any) => {
           variant="standard"
           type={type}
         />
-      </Grid>
-      <Grid item xs={1}>
-        <IconButton onClick={removeFilter} sx={{ textTransform: "unset" }}>
-          <CloseIcon />
-        </IconButton>
       </Grid>
     </>
   );

@@ -8,7 +8,7 @@ import Collapse from "@mui/material/Collapse";
 import useTableOptions from "../hooks/useTableOptions";
 import usePinColumn from "../hooks/usePinColumn";
 
-const TableBody = ({ loading }: { loading: boolean }) => {
+const TableBody = () => {
   const table = useTable();
   const tableOptions = useTableOptions();
   const bodyRowRef =useRef<any>()
@@ -22,7 +22,7 @@ const TableBody = ({ loading }: { loading: boolean }) => {
 
 
 
-  if (loading) {
+  if (tableOptions?.loading) {
     return <LoadingComponent />;
   }
 

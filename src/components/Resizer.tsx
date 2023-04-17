@@ -9,7 +9,7 @@ type InputProps = {
 
 
 
-const Resizer = styled(Box)<InputProps>(({theme})=>({
+const Resizer = styled(Box)<InputProps>(({theme,resizing})=>({
     position: "absolute",
     right: "-2%",
     top: "50%",
@@ -17,7 +17,7 @@ const Resizer = styled(Box)<InputProps>(({theme})=>({
     maxHeight:"22px",
     transform:"translateY(-50%)",
     width: "2px",
-    background: theme.palette.divider,
+    background: resizing ? theme.palette.primary.main :theme.palette.divider,
     cursor: "col-resize",
     userSelect: "none",
     touchAction: "none",

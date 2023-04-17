@@ -206,6 +206,7 @@ function App() {
       setFilters,
       filters,
     },
+    loading:loading
   };
 
   return (
@@ -215,7 +216,6 @@ function App() {
         data={data?.data ?? []}
         onCellUpdate={(value) => console.log({ value })}
         tableOptions={tableOptions}
-        loading={loading}
       />
     </Container>
   );

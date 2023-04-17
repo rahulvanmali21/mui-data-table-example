@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Popover,
+  LinearProgress,
 } from "@mui/material";
 import Resizer from "./Resizer";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -74,7 +75,7 @@ const TableHead = () => {
     tableOptions?.sortingOptions?.onSort(sortObj);
   };
   const headRef = useRef<any>();
-
+  const loading = tableOptions?.loading ?? false;
 
   return (
     <>
@@ -126,6 +127,7 @@ const TableHead = () => {
                         )}
                         {header.column.getCanSort() && (
                           <TableSortLabel
+                          disabled={loading}                          
                             sx={{ marginRight: "auto" }}
                             active={
                               manualSorting
@@ -148,6 +150,7 @@ const TableHead = () => {
                         {header.id !== "select" && header.id !== "expander" && (
                           <IconButton
                             size="small"
+                            disabled={loading}
                             onClick={(e) => handleClick(e, header.column)}
                           >
                             <MoreVertIcon
@@ -159,7 +162,7 @@ const TableHead = () => {
                       </Box>
                     )}
 
-                    {/* {header.id !== "select" && header.id !== "expander" && ( */}
+                    {header.id !== "select" && header.id !== "expander" && (
                     <Resizer
                       {...{
                         onMouseDown: header.getResizeHandler(),
@@ -167,7 +170,7 @@ const TableHead = () => {
                         resizing: header.column.getIsResizing(),
                       }}
                     />
-                    {/* )} */}
+                     )} 
                   </Box>
                 </TableCell>
               );
@@ -175,25 +178,24 @@ const TableHead = () => {
           </TableRow>
         ))}
         <tr ref={menuAnchor}>
-          <td style={{ padding: 0 }}>
+          <td style={{ padding: 0 }} colSpan={table.getAllLeafColumns().length}>
+            {loading && <LinearProgress />}
             <Popover
               disablePortal
               anchorEl={mainAnchor}
               open={!!mainAnchor}
               onClose={(e) => setmainAnchor(null)}
             >
-              {
-                (()=>{
-                  switch (menuType) {
-                    case "filters":
-                      return <Filter selectedColumnId={selectedColumn} />
-                    case "columns":
-                      return <ColumnSelection />                    
-                    case "complex_filters":
-                      return <ComplexFilter selectedColumnId={selectedColumn} />
-                  }
-                })()
-              }
+              {(() => {
+                switch (menuType) {
+                  case "filters":
+                    return <Filter selectedColumnId={selectedColumn} />;
+                  case "columns":
+                    return <ColumnSelection />;
+                  case "complex_filters":
+                    return <ComplexFilter selectedColumnId={selectedColumn} />;
+                }
+              })()}
             </Popover>
           </td>
         </tr>
@@ -207,7 +209,6 @@ const TableHead = () => {
         }}
         selectedColumnId={selectedColumn}
       />
-      
     </>
   );
 };
