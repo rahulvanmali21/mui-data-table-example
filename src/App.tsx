@@ -187,10 +187,8 @@ function App() {
     },
     sortingOptions: {
       currentSort: sort,
-      order: undefined,
-      onSort: (sortObj: any) => {
-        setSort(sortObj);
-      },
+      multiSort:true,
+      onSort: setSort,
     },
     subComponentOptions:{
       position:"start",

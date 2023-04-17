@@ -17,29 +17,28 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Filter from "./Filter";
 import ColumnSelection from "./ColumnSelection";
 import useTableOptions from "../hooks/useTableOptions";
-import { SortOrder } from "../types/TableControl";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import ColumnMenu from "./ColumnMenu";
 import usePinColumn from "../hooks/usePinColumn";
 import TableCell from "./ui/TableCell";
 import ComplexFilter from "./ui/ComplexFilter.tsx/ComplexFilter";
+import useTableSort from "../hooks/useTableSort";
 
 const TableHead = () => {
   const table = useTable();
   const tableOptions = useTableOptions();
+  const {manualSorting,getIsSorted,getToggleSortingHandler}= useTableSort();
 
-  const [anchorEl, setAnchorEl] = useState<
-    (EventTarget & HTMLButtonElement) | null
-  >(null);
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
+  const headRef = useRef<any>();
+  const loading = tableOptions?.loading ?? false;
   const [mainAnchor, setmainAnchor] = useState<Element | null>(null);
   const [menuType, setMenuType] = useState<any | null>(null);
-  const [sorts, setSort] = useState<any>({});
+
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
 
   const menuAnchor = useRef<HTMLTableRowElement>(null);
 
-  const manualSorting = tableOptions?.manualSorting ?? false;
 
   const { getColumnOffset } = usePinColumn();
 
@@ -53,29 +52,10 @@ const TableHead = () => {
     setmainAnchor(menuAnchor?.current);
   };
 
-  const getIsSorted = (columnId: string): SortOrder => {
-    if (sorts[columnId]) {
-      return sorts[columnId].order;
-    }
-    return undefined;
-  };
+  console.log("rendered")
 
-  const getToggleSortingHandler = (columnId: any) => {
-    let sortObj;
-    if (!sorts[columnId] || !sorts[columnId].order) {
-      sortObj = { [columnId]: { order: "asc" } };
-    } else if (sorts[columnId]?.order === "asc") {
-      sortObj = { [columnId]: { order: "desc" } };
-    } else {
-      const copy = structuredClone(sorts);
-      delete copy[columnId];
-      sortObj = copy;
-    }
-    setSort(sortObj);
-    tableOptions?.sortingOptions?.onSort(sortObj);
-  };
-  const headRef = useRef<any>();
-  const loading = tableOptions?.loading ?? false;
+ 
+  
 
   return (
     <>

@@ -14,8 +14,9 @@ type PaginationOptions ={
 
 type SortingOptions = {
     currentSort:string[] | string | null,
-    order:SortOrder
-    onSort:(column:any)=>void
+    order?:SortOrder
+    onSort:(column:any)=>void,
+    multiSort?:boolean
 }
 
 type FilterOptions = {
