@@ -16,7 +16,7 @@ const LoadingComponent = () => {
 
                 {columns.map((col)=>(
                     <TableCell key={col.id} >
-                        <Skeleton width={Math.round(col.getSize() * 0.85)}/>
+                        <Skeleton animation="wave" width={Math.round(col.getSize() * 0.85)}/>
                     </TableCell>
                 ))}
                 </TableRow>

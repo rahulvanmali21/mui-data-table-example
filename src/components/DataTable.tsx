@@ -35,7 +35,6 @@ declare module "@tanstack/react-table" {
 }
 
 const DataTable = (props: DataTableProp) => {
-  //   const [data, setData] = React.useState<Person[]>(makeData(311));
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
