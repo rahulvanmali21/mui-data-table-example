@@ -4,7 +4,6 @@ import {
   PaginationState,
   getPaginationRowModel,
   getCoreRowModel,
-  ColumnDef,
   ColumnOrderState,
   useReactTable,
   getSortedRowModel,
@@ -22,11 +21,12 @@ import TablePagination from "./TablePagination";
 import useSkipper from "../hooks/useSkipper";
 import { defaultColumn } from "./DefaultColumn";
 import { rowSelectionOption } from "./RowSelection";
-import { DataTableProp, TableOptions } from "../types/TableControl";
+import { DataTableProp } from "../types/TableControl";
 import { TableOptionContext } from "../TableOptionContext";
 import { RowExpander } from "./ExpanderColumn";
 import TableFooter from "./TableFooter";
 import ColumnDragAndDrop from "../ColumnDragAndDropContext";
+import TableToolbar from "./TableToolbar";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -103,10 +103,11 @@ const DataTable = (props: DataTableProp) => {
        
       <TableOptionContext.Provider value={tableOptions}>
         <ColumnDragAndDrop>
+        <TableToolbar/>
         <TableContainer
           component={Paper}
           variant="outlined"
-          sx={{ maxWidth: "100%", overflowX: "auto" }}
+          sx={{ maxWidth: "100%", overflowX: "auto",borderRadius:0 }}
         >
           <MuiTable
             stickyHeader

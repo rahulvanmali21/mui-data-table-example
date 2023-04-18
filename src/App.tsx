@@ -174,6 +174,9 @@ function App() {
   }, [rowsPerPage, pageIndex, sort, filters]);
 
   const tableOptions: TableOptions = {
+    titleOptions:{
+      title:"Employees"
+    },
     manualPagination: true,
     manualSorting: true,
     paginationOption: {

@@ -50,9 +50,9 @@ const ColumnMenu = ({
 
       <Divider />
 
-      {column?.getIsPinned() && (
         <MenuItem
           dense
+          disabled={!column?.getIsPinned()}
           onClick={() => {
             onClose?.();
             column?.pin(false);
@@ -61,13 +61,13 @@ const ColumnMenu = ({
           <ListItemIcon></ListItemIcon>
           <ListItemText>Unpin</ListItemText>
         </MenuItem>
-      )}
-      {column?.getIsPinned() !== "left" ? (
+      
         <MenuItem
           onClick={() => {
             onClose?.();
             column?.pin("left");
           }}
+          disabled={column?.getIsPinned() ==="left"}
           dense
         >
           <ListItemIcon>
@@ -75,13 +75,14 @@ const ColumnMenu = ({
           </ListItemIcon>
           <ListItemText>Pin Left</ListItemText>
         </MenuItem>
-      ) : null}
-      {column?.getIsPinned() !== "right" ? (
+      
+ 
         <MenuItem
           onClick={() => {
             onClose?.();
             column?.pin("right");
           }}
+          disabled={column?.getIsPinned() ==="right"}
           dense
         >
           <ListItemIcon>
@@ -89,7 +90,6 @@ const ColumnMenu = ({
           </ListItemIcon>
           <ListItemText>Pin Right</ListItemText>
         </MenuItem>
-      ) : null}
     </Menu>
   );
 };

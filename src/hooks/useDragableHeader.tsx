@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
-import { DragSourceMonitor, DropTargetMonitor, useDrag, useDrop } from "react-dnd";
+import {
+  DragSourceMonitor,
+  DropTargetMonitor,
+  useDrag,
+  useDrop,
+} from "react-dnd";
 import { useTable } from "../TableContext";
 import { Column, ColumnOrderState } from "@tanstack/react-table";
-import useTableOptions from "./useTableOptions";
 import useColumnDnd from "./useColumnDnd";
 
 const reorderColumn = (
@@ -18,34 +22,35 @@ const reorderColumn = (
   return [...columnOrder];
 };
 
-const useDragableHeader = ({ header }: any) => {
+const useDragableHeader = ({ column }: any) => {
   const table = useTable();
-  const tableOptions = useTableOptions();
-  const { setters } = useColumnDnd();
+  const { state, setters } = useColumnDnd();
   const { getState, setColumnOrder } = table;
   const { columnOrder } = getState();
-  const { column } = header;
+  const { draggedColumn, hoverOn } = state;
 
-  const [{isOver}, dropRef] = useDrop({
+  const [{ isOver,didDrop}, dropRef] = useDrop({
     accept: "column",
-    drop: (draggedColumn: Column<any>) => {
+    drop: (draggedColumn: Column<any>, monitor: DropTargetMonitor) => {
       const newColumnOrder = reorderColumn(
         draggedColumn.id,
         column.id,
         columnOrder
       );
-      setColumnOrder(newColumnOrder);
-      setters?.setDraggedColumn(null)
-      setters.setHoverOn(null);
 
+      setColumnOrder(newColumnOrder);
+      setters?.setDraggedColumn(null);
+      setters.setHoverOn(null);
     },
-      collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
-      }),
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+      didDrop: monitor.didDrop(),
+      canDrop: monitor.canDrop(),
+    }),
   });
 
   const [{ isDragging }, dragRef, previewRef] = useDrag({
-    collect: (monitor:DragSourceMonitor) => ({
+    collect: (monitor: DragSourceMonitor) => ({
       isDragging: monitor.isDragging(),
     }),
     item: () => column,
@@ -53,16 +58,14 @@ const useDragableHeader = ({ header }: any) => {
   });
 
   useEffect(() => {
-    if (isDragging) {
-      setters?.setDraggedColumn(header.id)
-    }
-  }, [isDragging, setters, header]);
+      setters?.setDraggedColumn((s:any)=>({...s ,[column.id]:isDragging}));
+  }, [isDragging]);
 
-  useEffect(()=>{
-    if(isOver){
-      setters?.setHoverOn(header.id)
-    }
-  },[isOver])
+  useEffect(() => {
+      setters?.setHoverOn((s:any)=>({...s ,[column.id]:isOver}));
+  }, [isOver]);
+
+
   return { isDragging, dragRef, previewRef, dropRef };
 };
 
