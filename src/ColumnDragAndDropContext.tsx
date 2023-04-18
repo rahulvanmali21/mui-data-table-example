@@ -1,4 +1,6 @@
 import React, { createContext, useState } from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 const defaultValue:any = {
     state:{},
@@ -26,7 +28,9 @@ const ColumnDragAndDrop = (props:Props) => {
     }
   return (
     <ColumnDragAndDropContext.Provider value={{state,setters}}>
+        <DndProvider backend={HTML5Backend}>
         {props.children}
+        </DndProvider>
     </ColumnDragAndDropContext.Provider>
   )
 }

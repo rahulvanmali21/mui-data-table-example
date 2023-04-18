@@ -44,7 +44,7 @@ const TableHead = () => {
   };
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <>
       <MuiTableHead ref={headRef}>
         {table.getHeaderGroups().map((headerGroup, ij) => (
           <TableRow key={ij}>
@@ -85,7 +85,7 @@ const TableHead = () => {
         }}
         selectedColumnId={selectedColumn}
       />
-    </DndProvider>
+    </>
   );
 };
 

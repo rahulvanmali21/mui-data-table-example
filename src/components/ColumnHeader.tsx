@@ -8,7 +8,6 @@ import { Box, IconButton, TableSortLabel } from "@mui/material";
 import useTableOptions from "../hooks/useTableOptions";
 import useTableSort from "../hooks/useTableSort";
 import useDragableHeader from "../hooks/useDragableHeader";
-import DragHandleIcon from "@mui/icons-material/DragHandle";
 import useColumnDnd from "../hooks/useColumnDnd";
 import DragIcon from "./DragIcon";
 
@@ -18,12 +17,10 @@ const ColumnHeader = ({ header, onClick }: any) => {
   const { manualSorting, getIsSorted, getToggleSortingHandler } =
     useTableSort();
 
-  const { dragRef, previewRef, dropRef } = useDragableHeader({ header });
-
+  const { dragRef, previewRef, dropRef } = useDragableHeader({ column:header.column });
   const pinned = header.column.getIsPinned();
   const { state } = useColumnDnd();
-  console.log({ draggedColumn: state.draggedColumn });
-  return (
+    return (
     <TableCell
       ref={dropRef}
       title={header.id}
@@ -34,8 +31,8 @@ const ColumnHeader = ({ header, onClick }: any) => {
         minWidth: header.getSize(),
         opacity: state.draggedColumn === header.id ? 0.5 : 1,
       }}
-      isDragged={state.draggedColumn === header.id}
-      isHoveredOn={state.hoverOn === header.id}
+      isHoveredOn={state.hoverOn && !!state.hoverOn[header.id] }
+      isDragged={state.draggedColumn && !!state.draggedColumn[header.id]}
       pinned={pinned ?? false}
       offset={pinned ? getColumnOffset(header.column.id, pinned) : null}
     >
@@ -75,7 +72,7 @@ const ColumnHeader = ({ header, onClick }: any) => {
                 direction={getIsSorted(header.column.id, header)}
               />
             )}
-            {header.id !== "select" && header.id !== "expander" && (
+            {header.id !== "select" && header.id !== "expander" && !pinned &&  (
                 <DragIcon ref={dragRef}/>
             )}
             {header.id !== "select" && header.id !== "expander" && (

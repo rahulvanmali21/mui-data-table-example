@@ -36,8 +36,13 @@ export type SubComponentOptions = {
     onClose?:()=>void
 }
 
+export type TitleOption = {
+        title:string,
+}
+
 
 export type TableOptions = {
+    titleOptions?:TitleOption,
     manualPagination?:boolean,
     manualSorting?:boolean,
     paginationOption?:PaginationOptions,
