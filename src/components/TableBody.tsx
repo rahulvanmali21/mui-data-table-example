@@ -7,6 +7,7 @@ import TableCell from "./ui/TableCell";
 import Collapse from "@mui/material/Collapse";
 import useTableOptions from "../hooks/useTableOptions";
 import usePinColumn from "../hooks/usePinColumn";
+import useColumnDnd from "../hooks/useColumnDnd";
 
 const TableBody = () => {
   const table = useTable();
@@ -18,9 +19,9 @@ const TableBody = () => {
 
   const rows = table.getRowModel().rows;
 
+  const {state} = useColumnDnd()
 
-
-
+  console.log({hover:state.hoverOn})
 
   if (tableOptions?.loading) {
     return <LoadingComponent />;
@@ -34,9 +35,13 @@ const TableBody = () => {
           <React.Fragment key={i}>
             <TableRow hover {...(i===0 && {ref:bodyRowRef})}>
               {row.getVisibleCells().map((cell, j) => {
+                
                 const pinned = cell.column.getIsPinned();
                 return (
                   <TableCell
+                    isHoveredOn={state.hoverOn == cell.column.id}
+                    isDragged={state.draggedColumn === cell.column.id}
+
                     size="small"
                     key={j}
                     pinned={pinned ?? false}

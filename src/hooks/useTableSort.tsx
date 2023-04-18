@@ -14,9 +14,10 @@ const useTableSort = () => {
   
 
  
-  const getIsSorted = (columnId: string): SortOrder => {
+  const getIsSorted = (columnId: string, header:any): SortOrder => {
+    
         const value =  sorts.get(columnId)?.order ?? undefined;
-        return value
+        return manualSorting ? value : header.column.getIsSorted() || undefined
   };
 
   const getToggleSortingHandler = (columnId: any) => {
@@ -33,7 +34,6 @@ const useTableSort = () => {
     tableOptions?.sortingOptions?.onSort(Object.fromEntries(sortObj));
   };
 
-  console.log("hook-rendered")
 
   return {
     manualSorting,

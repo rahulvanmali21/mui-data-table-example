@@ -22,10 +22,11 @@ import TablePagination from "./TablePagination";
 import useSkipper from "../hooks/useSkipper";
 import { defaultColumn } from "./DefaultColumn";
 import { rowSelectionOption } from "./RowSelection";
-import { DataTableProp } from "../types/TableControl";
+import { DataTableProp, TableOptions } from "../types/TableControl";
 import { TableOptionContext } from "../TableOptionContext";
 import { RowExpander } from "./ExpanderColumn";
 import TableFooter from "./TableFooter";
+import ColumnDragAndDrop from "../ColumnDragAndDropContext";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -35,28 +36,29 @@ declare module "@tanstack/react-table" {
 }
 
 const DataTable = (props: DataTableProp) => {
-
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnPinning, setColumnPinning] = React.useState({});
-  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
+  const [draggingColumn, setDraggingColumn] = React.useState<string|null>(null);
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
 
-
   const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper();
   let columns = [rowSelectionOption, ...props.columns];
+  const tableOptions = props.tableOptions;
 
-
-  if(props.tableOptions?.subComponentOptions){
-    if(props.tableOptions?.subComponentOptions.position === "start"){
-      columns = [RowExpander,...columns]
-    }else{
-      columns.push(RowExpander)
+  if (tableOptions?.subComponentOptions) {
+    if (tableOptions?.subComponentOptions.position === "start") {
+      columns = [RowExpander, ...columns];
+    } else {
+      columns.push(RowExpander);
     }
   }
+  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(
+    columns.map((column) => column.id as string)
+  );
 
-  
   const table = useReactTable({
     data: props.data ?? [],
     columns: columns,
@@ -76,14 +78,14 @@ const DataTable = (props: DataTableProp) => {
       setRowSelection(row);
     },
     onPaginationChange: () => {
-      props.tableOptions?.manualPagination && setRowSelection({});
+      tableOptions?.manualPagination && setRowSelection({});
     },
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex,
-    manualPagination: props.tableOptions?.manualPagination,
+    manualPagination: tableOptions?.manualPagination,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
     onColumnPinningChange: setColumnPinning,
@@ -98,23 +100,30 @@ const DataTable = (props: DataTableProp) => {
 
   return (
     <TableContext.Provider value={table}>
-      <TableOptionContext.Provider value={props.tableOptions}>
+       
+      <TableOptionContext.Provider value={tableOptions}>
+        <ColumnDragAndDrop>
         <TableContainer
           component={Paper}
           variant="outlined"
           sx={{ maxWidth: "100%", overflowX: "auto" }}
         >
-          <MuiTable stickyHeader sx={{width:`clamp(100%,${table.getCenterTotalSize()}px,600%)`}}>
+          <MuiTable
+            stickyHeader
+            sx={{ width: `clamp(100%,${table.getCenterTotalSize()}px,600%)` }}
+          >
             <TableHead />
-            <TableBody/>
-            <TableFooter/>
+            <TableBody />
+            <TableFooter />
           </MuiTable>
         </TableContainer>
         <TablePagination />
-
+    
+        </ColumnDragAndDrop>
       </TableOptionContext.Provider>
     </TableContext.Provider>
   );
 };
 
 export default DataTable;
+
