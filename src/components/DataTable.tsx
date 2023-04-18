@@ -39,7 +39,6 @@ const DataTable = (props: DataTableProp) => {
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnPinning, setColumnPinning] = React.useState({});
-  const [draggingColumn, setDraggingColumn] = React.useState<string|null>(null);
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -107,7 +106,7 @@ const DataTable = (props: DataTableProp) => {
         <TableContainer
           component={Paper}
           variant="outlined"
-          sx={{ maxWidth: "100%", overflowX: "auto",borderRadius:0 }}
+          sx={{ maxWidth: "100%", overflowX: "auto",borderRadius:0 ,borderBottom:0 }}
         >
           <MuiTable
             stickyHeader

@@ -42,13 +42,7 @@ const TableBody = () => {
           return (
             <React.Fragment key={i}>
               <TableRow hover {...(i === 0 && { ref: bodyRowRef })} selected={selectedIDsSet?.has(row.id)}>
-                {row.getVisibleCells().map((cell, j) => (
-                    <BodyTableCell cell={cell} key={j} padding={j === 0 ? "checkbox" : "normal"}/>
-                )
-
-                  
-                  
-                )}
+                {row.getVisibleCells().map((cell, j) => <BodyTableCell cell={cell} key={j} rowIndex={i+1} padding={j === 0 ? "checkbox" : "normal"}/>)}
               </TableRow>
               <TableRow>
                 <TableCell
