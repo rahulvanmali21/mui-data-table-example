@@ -109,9 +109,8 @@ function App() {
         size:200,
       },
       {
-        id: "updatedAt",
-
-        accessorKey: "attributes.updatedAt",
+        id:'publishedAt',
+        accessorKey: "attributes.publishedAt",
         header: "Published At",
         meta: {
           type: "datetime",
