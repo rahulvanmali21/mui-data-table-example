@@ -22,6 +22,7 @@ const Resizer = styled(Box)<InputProps>(({theme,resizing})=>({
     userSelect: "none",
     touchAction: "none",
     "&:hover":{
+        background: resizing ? theme.palette.primary.main :theme.palette.grey["500"],
         opacity:1,
     }
 }))

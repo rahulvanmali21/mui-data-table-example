@@ -8,6 +8,7 @@ import {
 import { useTable } from "../TableContext";
 import { Column, ColumnOrderState } from "@tanstack/react-table";
 import useColumnDnd from "./useColumnDnd";
+import { TOOLBAR_ID } from "../components/TableToolbar";
 
 const reorderColumn = (
   draggedColumnId: string,
@@ -24,14 +25,16 @@ const reorderColumn = (
 
 const useDragableHeader = ({ column }: any) => {
   const table = useTable();
-  const { state, setters } = useColumnDnd();
+  const { setters } = useColumnDnd();
   const { getState, setColumnOrder } = table;
   const { columnOrder } = getState();
-  const { draggedColumn, hoverOn } = state;
 
-  const [{ isOver,didDrop}, dropRef] = useDrop({
+  const [{ isOver}, dropRef] = useDrop({
     accept: "column",
     drop: (draggedColumn: Column<any>, monitor: DropTargetMonitor) => {
+        if(column.id === TOOLBAR_ID) {
+         return;
+        }
       const newColumnOrder = reorderColumn(
         draggedColumn.id,
         column.id,
