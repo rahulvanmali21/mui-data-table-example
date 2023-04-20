@@ -6,9 +6,11 @@ import useTablePagination from "../hooks/useTablePagination";
 
 type Props = {};
 
-const TablePagination = (props: Props) => {
-  const { rowsPerPage, gotoPage, count, pageIndex, onRowsPerPageChange } =
+const TablePagination = (props: any) => {
+  const { rowsPerPage, gotoPage, count, pageNo, onRowsPerPageChange } =
     useTablePagination();
+
+
   return (
     <Paper
       sx={{ borderTop: 0, borderTopRightRadius: 0, borderTopLeftRadius: 0 }}
@@ -20,8 +22,8 @@ const TablePagination = (props: Props) => {
         component="div"
         count={count ?? 0}
         rowsPerPage={rowsPerPage ?? 0}
-        page={pageIndex ?? 0}
-        onPageChange={(e, page) => gotoPage?.(page)}
+        page={pageNo ?? 4}
+        onPageChange={(e, page) => gotoPage(page)}
         onRowsPerPageChange={(e) => {
           onRowsPerPageChange?.(parseInt(e.target.value, 10));
         }}
@@ -31,3 +33,5 @@ const TablePagination = (props: Props) => {
 };
 
 export default TablePagination;
+
+

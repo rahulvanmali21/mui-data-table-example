@@ -41,6 +41,7 @@ const ColumnHeader = ({ header, onClick }: any) => {
         height={"100%"}
         position={"relative"}
         ref={previewRef}
+        px={1}
       >
         {header.isPlaceholder ? null : (
           <Box
