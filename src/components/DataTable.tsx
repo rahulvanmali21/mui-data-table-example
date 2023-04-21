@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   PaginationState,
+  getGroupedRowModel,
   getPaginationRowModel,
   getCoreRowModel,
   ColumnOrderState,
@@ -11,6 +12,7 @@ import {
   RowData,
   VisibilityState,
   getExpandedRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 
 import { TableContext } from "../TableContext";
@@ -55,7 +57,7 @@ const DataTable = (props: DataTableProp) => {
     }
   }
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(
-    columns.map((column) =>  column.id  as string ?? column.id)
+    columns.map((column) => column.id as string)
   );
 
   const table = useReactTable({
@@ -73,15 +75,18 @@ const DataTable = (props: DataTableProp) => {
     onSortingChange: setSorting,
     columnResizeMode: "onChange",
     enableRowSelection: true,
-    onRowSelectionChange: (row) => {
-      setRowSelection(row);
-    },
-    onPaginationChange: () => {
-      tableOptions?.manualPagination && setRowSelection({});
-    },
-    getSortedRowModel: getSortedRowModel(),
+    enableGrouping: true,
+    enableMultiSort: true,
+    onRowSelectionChange: setRowSelection,
+    ...(
+      tableOptions?.manualPagination && {onPaginationChange:  ()=>setRowSelection({})}
+    ),
+  
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getGroupedRowModel: getGroupedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex,
     manualPagination: tableOptions?.manualPagination,
@@ -97,28 +102,40 @@ const DataTable = (props: DataTableProp) => {
     },
   });
 
+  // data,
+  // columns,
+  // // Pipeline
+  // getCoreRowModel: getCoreRowModel(),
+  // getFilteredRowModel: getFilteredRowModel(),
+  // getPaginationRowModel: getPaginationRowModel(),
+  // //
+  // debugTable: true,
+
   return (
     <TableContext.Provider value={table}>
-       
       <TableOptionContext.Provider value={tableOptions}>
         <ColumnDragAndDrop>
-        <TableToolbar/>
-        <TableContainer
-          component={Paper}
-          variant="outlined"
-          sx={{ maxWidth: "100%", overflowX: "auto",borderRadius:0 ,borderBottom:0 }}
-        >
-          <MuiTable
-            stickyHeader
-            sx={{ width: `clamp(100%,${table.getCenterTotalSize()}px,600%)` }}
+          <TableToolbar />
+          <TableContainer
+            component={Paper}
+            variant="outlined"
+            sx={{
+              maxWidth: "100%",
+              overflowX: "auto",
+              borderRadius: 0,
+              borderBottom: 0,
+            }}
           >
-            <TableHead />
-            <TableBody />
-            <TableFooter />
-          </MuiTable>
-        </TableContainer>
-        <TablePagination />
-    
+            <MuiTable
+              stickyHeader
+              sx={{ width: `clamp(100%,${table.getCenterTotalSize()}px,600%)` }}
+            >
+              <TableHead />
+              <TableBody />
+              <TableFooter />
+            </MuiTable>
+          </TableContainer>
+          <TablePagination />
         </ColumnDragAndDrop>
       </TableOptionContext.Provider>
     </TableContext.Provider>
@@ -126,4 +143,3 @@ const DataTable = (props: DataTableProp) => {
 };
 
 export default DataTable;
-

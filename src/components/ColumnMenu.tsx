@@ -25,6 +25,11 @@ const ColumnMenu = ({
 }: Props) => {
   const table = useTable();
   const column = selectedColumnId ? table.getColumn(selectedColumnId) : null;
+  const getToggleGroupingHandler = ()=>{
+    const fn= column?.getToggleGroupingHandler();
+    fn?.();
+    onClose?.();
+  }  
   return (
     <Menu PaperProps={{elevation:1}} anchorEl={anchorEl} open={!!anchorEl} onClose={() => onClose?.()}>
       <MenuItem dense onClick={() => onMenuClick("columns")}>
@@ -32,6 +37,11 @@ const ColumnMenu = ({
           <ViewColumnIcon />
         </ListItemIcon>
         <ListItemText>Manange Columns</ListItemText>
+      </MenuItem>
+      <MenuItem dense onClick={getToggleGroupingHandler}>
+        <ListItemIcon>
+        </ListItemIcon>
+        <ListItemText>Group By {column?.id ?? ""}</ListItemText>
       </MenuItem>
       <Divider />
       <MenuItem dense onClick={() => onMenuClick("filters")}>

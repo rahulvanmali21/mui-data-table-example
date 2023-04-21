@@ -14,7 +14,7 @@ export const RowExpander = {
     const { table } = props;
     const tableOptions = useTableOptions();
     const state = table.getState();
-    const rowSize = state.pagination.pageSize;
+    const rowSize = state?.pagination.pageSize;
     const expandedType: ExpandedType = useMemo(() => {
       const expandSize = Object.keys(state.expanded).length;
       if (rowSize === expandSize) return "full";
@@ -60,6 +60,20 @@ const ExpanderHeaderIcon = styled(KeyboardDoubleArrowDownIcon)<Props>(
           transform: `rotate(${
             props.expandedType === "partial" ? "-90" : "180"
           }deg)`,
+        }
+      : {}),
+  })
+);
+type IProps = {
+  expanded: boolean;
+};
+
+export const ExpanderColumnIcon = styled(KeyboardArrowDownIcon)<IProps>(
+  (props) => ({
+    transition: "all 0.4s ease-in-out",
+    ...(props.expanded
+      ? {
+          transform: `rotate(180deg)`,
         }
       : {}),
   })

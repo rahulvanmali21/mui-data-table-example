@@ -31,7 +31,6 @@ const ComplexFilter = ({ selectedColumnId }: any) => {
   }, []);
 
   useEffect(() => {
-    console.log({ arr: filter });
     if (Array.isArray(filter)) {
       setfilters(filter);
     }

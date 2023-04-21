@@ -29,19 +29,21 @@ const useDragableHeader = ({ column }: any) => {
   const { getState, setColumnOrder } = table;
   const { columnOrder } = getState();
 
-  const [{ isOver}, dropRef] = useDrop({
+  const [{ isOver }, dropRef] = useDrop({
     accept: "column",
     drop: (draggedColumn: Column<any>, monitor: DropTargetMonitor) => {
-        if(column.id === TOOLBAR_ID) {
-         return;
-        }
-      const newColumnOrder = reorderColumn(
-        draggedColumn.id,
-        column.id,
-        columnOrder
-      );
+      if (column.id === TOOLBAR_ID) {
+        groupColumn(draggedColumn.id);
+      } else {
+        const newColumnOrder = reorderColumn(
+          draggedColumn.id,
+          column.id,
+          columnOrder
+        );
 
-      setColumnOrder(newColumnOrder);
+        setColumnOrder(newColumnOrder);
+      }
+
       setters?.setDraggedColumn(null);
       setters.setHoverOn(null);
     },
@@ -61,13 +63,16 @@ const useDragableHeader = ({ column }: any) => {
   });
 
   useEffect(() => {
-      setters?.setDraggedColumn((s:any)=>({...s ,[column.id]:isDragging}));
+    setters?.setDraggedColumn((s: any) => ({ ...s, [column.id]: isDragging }));
   }, [isDragging]);
 
   useEffect(() => {
-      setters?.setHoverOn((s:any)=>({...s ,[column.id]:isOver}));
+    setters?.setHoverOn((s: any) => ({ ...s, [column.id]: isOver }));
   }, [isOver]);
 
+  const groupColumn = (draggedColumn: string) => {
+    table.setGrouping((s) => [...s, draggedColumn]);
+  };
 
   return { isDragging, dragRef, previewRef, dropRef };
 };

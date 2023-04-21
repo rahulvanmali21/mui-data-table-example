@@ -36,7 +36,7 @@ function App() {
       {
         id: "first_name",
 
-        accessorKey: "attributes.first_name",
+        accessorKey: "first_name",
         header: () => <span>First Name</span>,
         footer: (props) => props.column.id,
         
@@ -45,7 +45,7 @@ function App() {
       {
         id: "last_name",
 
-        accessorKey: "attributes.last_name",
+        accessorKey: "last_name",
         header: () => <span>Last Name</span>,
         footer: (props) => props.column.id,
         
@@ -54,7 +54,7 @@ function App() {
       {
         id: "email",
 
-        accessorKey: "attributes.email",
+        accessorKey: "email",
         header: () => "Email",
         footer: (props) => props.column.id,
         
@@ -63,55 +63,60 @@ function App() {
       {
         id: "views",
 
-        accessorKey: "attributes.views",
+        accessorKey: "views",
         header: () => <span>views</span>,
         meta: {
           type: "number",
         },
         footer: (props) => props.column.id,
-        
+        aggregationFn: 'sum',
         size:200,
       },
       {
         id: "dob",
 
-        accessorKey: "attributes.dob",
+        accessorKey: "dob",
         header: "Date of Birth",
         meta: {
           type: "date",
         },
         footer: (props) => props.column.id,
         
-        size:200,
+        size:250,
       },
       {
-        id: "createdAt",
+        id: "address",
 
-        accessorKey: "attributes.createdAt",
+        accessorKey: "address",
+        header: "Address",
+        footer: (props) => props.column.id,        
+        size:250,
+      },
+      {
+        id: "phone",
+
+        accessorKey: "phone",
+        header: "Phone",
+        footer: (props) => props.column.id,        
+        size:250,
+      },
+      {
+        id: "createdOn",
+
+        accessorKey: "createdOn",
         header: "Created At",
         meta: {
           type: "datetime",
         },
         footer: (props) => props.column.id,
         
-        size:200,
+        size:250,
       },
       {
-        id: "updatedAt",
+        id: "updatedOn",
 
-        accessorKey: "attributes.updatedAt",
+        accessorKey: "updatedOn",
         header: "Updated At",
-        meta: {
-          type: "datetime",
-        },
-        footer: (props) => props.column.id,
-        
-        size:200,
-      },
-      {
-        id:'publishedAt',
-        accessorKey: "attributes.publishedAt",
-        header: "Published At",
         meta: {
           type: "datetime",
         },
@@ -131,8 +136,9 @@ function App() {
   const [filters, setFilters] = useState<Filter>();
 
   const fetchData = async (page = 0, limit = 10) => {
-    const url = new URL("http://localhost:1337/api/employees");
-
+    // const url = new URL("http://localhost:1337/api/employees");
+    const url = new URL("http://localhost:3000/employees");
+    // http://localhost:3000/employees
 
 
     // pagination
@@ -176,10 +182,10 @@ function App() {
     titleOptions:{
       title:"Employees"
     },
-    manualPagination: true,
-    manualSorting: true,
+    manualPagination: false,
+    manualSorting: false,
     paginationOption: {
-      totalCount: data?.meta.pagination.total ?? undefined,
+      totalCount: data?.meta?.pagination.total ?? undefined,
       rowsPerPage: rowsPerPage,
       onRowsPerPageChange: (s: number) => setrowsPerPage(s),
       gotoPage: (pageNum: number) => {
@@ -192,16 +198,16 @@ function App() {
       multiSort:true,
       onSort: setSort,
     },
-    subComponentOptions:{
-      position:"start",
-      component:({row})=><Box paddingX={3} paddingY={4}>
-        <pre>
-        {
-          JSON.stringify(row?.original,null,2)
-        }
-        </pre>
-      </Box>
-    },
+    // subComponentOptions:{
+    //   position:"start",
+    //   component:({row})=><Box paddingX={3} paddingY={4}>
+    //     <pre>
+    //     {
+    //       JSON.stringify(row?.original,null,2)
+    //     }
+    //     </pre>
+    //   </Box>
+    // },
     filterOptions: {
       setFilters,
       filters,
@@ -213,7 +219,7 @@ function App() {
     <Container sx={{ mt: 6 }} maxWidth={false}>
       <DataTable
         columns={columns}
-        data={data?.data ?? []}
+        data={data ?? []}
         onCellUpdate={(value) => console.log({ value })}
         tableOptions={tableOptions}
       />
