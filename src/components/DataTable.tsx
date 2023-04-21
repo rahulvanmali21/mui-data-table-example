@@ -57,11 +57,7 @@ const DataTable = (props: DataTableProp) => {
     }
   }
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(
-<<<<<<< Updated upstream
     columns.map((column) => column.id as string)
-=======
-    columns.map((column) => (column.id as string) ?? column.id)
->>>>>>> Stashed changes
   );
 
   const table = useReactTable({

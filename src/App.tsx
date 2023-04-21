@@ -124,21 +124,6 @@ function App() {
         
         size:200,
       },
-<<<<<<< Updated upstream
-      {
-        id: "updatedAt",
-
-        accessorKey: "attributes.updatedAt",
-        header: "Published At",
-        meta: {
-          type: "datetime",
-        },
-        footer: (props) => props.column.id,
-        
-        size:200,
-      },
-=======
->>>>>>> Stashed changes
     ],
     []
   );

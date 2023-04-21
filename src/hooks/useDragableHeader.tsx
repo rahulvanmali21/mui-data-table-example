@@ -8,6 +8,7 @@ import {
 import { useTable } from "../TableContext";
 import { Column, ColumnOrderState } from "@tanstack/react-table";
 import useColumnDnd from "./useColumnDnd";
+import { TOOLBAR_ID } from "../components/TableToolbar";
 
 const reorderColumn = (
   draggedColumnId: string,
@@ -24,21 +25,10 @@ const reorderColumn = (
 
 const useDragableHeader = ({ column }: any) => {
   const table = useTable();
-  const { state, setters } = useColumnDnd();
+  const { setters } = useColumnDnd();
   const { getState, setColumnOrder } = table;
   const { columnOrder } = getState();
-  const { draggedColumn, hoverOn } = state;
 
-<<<<<<< Updated upstream
-  const [{ isOver,didDrop}, dropRef] = useDrop({
-    accept: "column",
-    drop: (draggedColumn: Column<any>, monitor: DropTargetMonitor) => {
-      const newColumnOrder = reorderColumn(
-        draggedColumn.id,
-        column.id,
-        columnOrder
-      );
-=======
   const [{ isOver }, dropRef] = useDrop({
     accept: "column",
     drop: (draggedColumn: Column<any>, monitor: DropTargetMonitor) => {
@@ -53,7 +43,6 @@ const useDragableHeader = ({ column }: any) => {
 
         setColumnOrder(newColumnOrder);
       }
->>>>>>> Stashed changes
 
       setters?.setDraggedColumn(null);
       setters.setHoverOn(null);

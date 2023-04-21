@@ -1,21 +1,3 @@
-<<<<<<< Updated upstream
-import { Paper, Toolbar, Typography } from '@mui/material'
-import React from 'react'
-import useTableOptions from '../hooks/useTableOptions'
-
-const TableToolbar = () => {
-    const tableOptions = useTableOptions()
-  return (
-    <Paper sx={{borderBottomLeftRadius:0,borderBottomRightRadius:0,borderBottom:0}} variant='outlined'>
-        <Toolbar>
-            {tableOptions?.titleOptions?.title && <Typography variant='h5'>{tableOptions?.titleOptions?.title}</Typography>}
-        </Toolbar>
-    </Paper>
-  )
-}
-
-export default TableToolbar
-=======
 import { Box, Chip, Paper, Stack, Toolbar, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useRef } from "react";
 import useTableOptions from "../hooks/useTableOptions";
@@ -23,6 +5,7 @@ import useDragableHeader from "../hooks/useDragableHeader";
 import useColumnDnd from "../hooks/useColumnDnd";
 import { IconButton, styled } from "@mui/material";
 import useTable from "../hooks/useTable";
+import ToolbarAction from "./ToolbarAction";
 export const TOOLBAR_ID = "DATATABLE_TOOLBAR";
 const TableToolbar = () => {
   const tableOptions = useTableOptions();
@@ -31,7 +14,6 @@ const TableToolbar = () => {
   const { dropRef } = useDragableHeader({ column });
   const { state } = useColumnDnd();
   const isHovering = state?.hoverOn?.[TOOLBAR_ID];
-  const { columnOrder } = table.getState();
 
 
   const groupColumn = table.getState().grouping;
@@ -66,11 +48,14 @@ const TableToolbar = () => {
         </ColumnDrop>
       ) : (
         <Box>
-          <Toolbar>
+          <Toolbar sx={{display:"flex",justifyContent:"space-between"}}>
             {tableOptions?.titleOptions?.title && (
+              <>
               <Typography variant="h5">
                 {tableOptions?.titleOptions?.title}
               </Typography>
+              {/* <ToolbarAction/> */}
+              </>
             )}
           </Toolbar>
           {groupColumn.length > 0 && (
@@ -103,4 +88,3 @@ const ColumnDrop = styled(Box)<Props>(({ theme, ishovering }) => ({
   border: "2px dashed " + theme?.palette?.primary?.light,
   width: "100%",
 }));
->>>>>>> Stashed changes
