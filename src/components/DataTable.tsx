@@ -29,6 +29,7 @@ import { RowExpander } from "./ExpanderColumn";
 import TableFooter from "./TableFooter";
 import ColumnDragAndDrop from "../ColumnDragAndDropContext";
 import TableToolbar from "./TableToolbar";
+import { fuzzyFilter } from "../util/filters";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -41,6 +42,7 @@ const DataTable = (props: DataTableProp) => {
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnPinning, setColumnPinning] = React.useState({});
+  const [globalFilter, setGlobalFilter] = React.useState();
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -70,6 +72,8 @@ const DataTable = (props: DataTableProp) => {
       columnVisibility,
       columnOrder,
       columnPinning,
+      globalFilter
+  
     },
     getRowCanExpand: () => true,
     onSortingChange: setSorting,
@@ -78,6 +82,8 @@ const DataTable = (props: DataTableProp) => {
     enableGrouping: true,
     enableMultiSort: true,
     onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: fuzzyFilter,
     ...(
       tableOptions?.manualPagination && {onPaginationChange:  ()=>setRowSelection({})}
     ),

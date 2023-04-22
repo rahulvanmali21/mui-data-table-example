@@ -1,11 +1,12 @@
-function debouce(func:any, delay = 300) {
-    let timeout:any;
-    return (...args:any) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        func(args);
-      }, delay);
-    };
-  }
-  
-  export default debouce;
+type FuncType = (...args: any[]) => any;
+
+export function debounce<F extends FuncType>(func: F, delay: number): (...args: Parameters<F>) => void {
+  let timerId: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<F>): void => {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      console.log("fired")
+      func(...args);
+    }, delay);
+  };
+}
