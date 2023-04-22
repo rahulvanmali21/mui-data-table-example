@@ -10,6 +10,8 @@ import useTable from "../hooks/useTable";
 import ViewColumnIcon from "@mui/icons-material/ViewColumn";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import VerticalSplitIcon from "@mui/icons-material/VerticalSplit";
+
 type Props = {
   anchorEl: any;
   onClose: () => void;
@@ -25,13 +27,18 @@ const ColumnMenu = ({
 }: Props) => {
   const table = useTable();
   const column = selectedColumnId ? table.getColumn(selectedColumnId) : null;
-  const getToggleGroupingHandler = ()=>{
-    const fn= column?.getToggleGroupingHandler();
+  const getToggleGroupingHandler = () => {
+    const fn = column?.getToggleGroupingHandler();
     fn?.();
     onClose?.();
-  }  
+  };
   return (
-    <Menu PaperProps={{elevation:1}} anchorEl={anchorEl} open={!!anchorEl} onClose={() => onClose?.()}>
+    <Menu
+      PaperProps={{ elevation: 1 }}
+      anchorEl={anchorEl}
+      open={!!anchorEl}
+      onClose={() => onClose?.()}
+    >
       <MenuItem dense onClick={() => onMenuClick("columns")}>
         <ListItemIcon>
           <ViewColumnIcon />
@@ -40,6 +47,7 @@ const ColumnMenu = ({
       </MenuItem>
       <MenuItem dense onClick={getToggleGroupingHandler}>
         <ListItemIcon>
+          <VerticalSplitIcon />
         </ListItemIcon>
         <ListItemText>Group By {column?.id ?? ""}</ListItemText>
       </MenuItem>
@@ -60,46 +68,45 @@ const ColumnMenu = ({
 
       <Divider />
 
-        <MenuItem
-          dense
-          disabled={!column?.getIsPinned()}
-          onClick={() => {
-            onClose?.();
-            column?.pin(false);
-          }}
-        >
-          <ListItemIcon></ListItemIcon>
-          <ListItemText>Unpin</ListItemText>
-        </MenuItem>
-      
-        <MenuItem
-          onClick={() => {
-            onClose?.();
-            column?.pin("left");
-          }}
-          disabled={column?.getIsPinned() ==="left"}
-          dense
-        >
-          <ListItemIcon>
-            <PushPinIcon sx={{ transform: "rotate(30deg)" }} />
-          </ListItemIcon>
-          <ListItemText>Pin Left</ListItemText>
-        </MenuItem>
-      
- 
-        <MenuItem
-          onClick={() => {
-            onClose?.();
-            column?.pin("right");
-          }}
-          disabled={column?.getIsPinned() ==="right"}
-          dense
-        >
-          <ListItemIcon>
-            <PushPinIcon sx={{ transform: "rotate(-30deg)" }} />
-          </ListItemIcon>
-          <ListItemText>Pin Right</ListItemText>
-        </MenuItem>
+      <MenuItem
+        dense
+        disabled={!column?.getIsPinned()}
+        onClick={() => {
+          onClose?.();
+          column?.pin(false);
+        }}
+      >
+        <ListItemIcon></ListItemIcon>
+        <ListItemText>Unpin</ListItemText>
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
+          onClose?.();
+          column?.pin("left");
+        }}
+        disabled={column?.getIsPinned() === "left"}
+        dense
+      >
+        <ListItemIcon>
+          <PushPinIcon sx={{ transform: "rotate(30deg)" }} />
+        </ListItemIcon>
+        <ListItemText>Pin Left</ListItemText>
+      </MenuItem>
+
+      <MenuItem
+        onClick={() => {
+          onClose?.();
+          column?.pin("right");
+        }}
+        disabled={column?.getIsPinned() === "right"}
+        dense
+      >
+        <ListItemIcon>
+          <PushPinIcon sx={{ transform: "rotate(-30deg)" }} />
+        </ListItemIcon>
+        <ListItemText>Pin Right</ListItemText>
+      </MenuItem>
     </Menu>
   );
 };

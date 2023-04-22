@@ -54,7 +54,7 @@ const TableToolbar = () => {
               <Typography variant="h5">
                 {tableOptions?.titleOptions?.title}
               </Typography>
-              {/* <ToolbarAction/> */}
+              <ToolbarAction/>
               </>
             )}
           </Toolbar>

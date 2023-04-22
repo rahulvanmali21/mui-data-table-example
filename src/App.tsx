@@ -137,7 +137,7 @@ function App() {
 
   const fetchData = async (page = 0, limit = 10) => {
     // const url = new URL("http://localhost:1337/api/employees");
-    const url = new URL("http://localhost:3000/employees");
+    const url = new URL("http://localhost:5000/employees");
     // http://localhost:3000/employees
 
 
