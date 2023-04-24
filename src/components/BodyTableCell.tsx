@@ -18,6 +18,7 @@ const BodyTableCell = ({ cell, padding, rowIndex, row }: any) => {
 
   return (
     <TableCell
+      variant="body"
       ref={dropRef}
       isHoveredOn={state.hoverOn && !!state.hoverOn[cell.column.id]}
       isDragged={state.draggedColumn && !!state.draggedColumn[cell.column.id]}
