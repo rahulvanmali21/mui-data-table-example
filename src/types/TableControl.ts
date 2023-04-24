@@ -40,9 +40,15 @@ export type TitleOption = {
         title:string,
 }
 
+export type GlobalFilterOptions = {
+    value?:string,
+    onChange?:(value:string)=>void,
+    manual:boolean
+}
 
 export type TableOptions = {
     titleOptions?:TitleOption,
+    globalFilterOptions?:GlobalFilterOptions,
     manualPagination?:boolean,
     manualSorting?:boolean,
     paginationOption?:PaginationOptions,

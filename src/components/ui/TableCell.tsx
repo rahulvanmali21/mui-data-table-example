@@ -18,7 +18,6 @@ const TableCell =  styled(MuiTableCell)<Props>((props)=>({
         borderLeft:"1px dashed " + props.theme.palette.primary.main,
         borderRight:"1px dashed " + props.theme.palette.primary.main,
         opacity:0.9,
-        transform:"translateY(-1px)"
     }),
     ...(props.isDragged && {
         borderLeft:"1px dashed " + props.theme.palette.divider,

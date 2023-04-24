@@ -5,30 +5,32 @@ import { Box, Container } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
 import { Filter, TableOptions } from "./types/TableControl";
 
-const operators = new Map(Object.entries({
-  is: "$eqi",
-  "is not": "$ne",
-  "is after": "$gt",
-  "is on or after": "$gte",
-  "is before": "$lt",
-  "is on or before": "$lt",
-  "is empty": "$null",
-  "is not empty": "$notNull",
-  "contains": "$contains",
-  "not contains": "$notContains",
-  "equals": "$eqi",
-  "startsWith": "$startsWith",
-  "endsWith": "$endsWith",
-  "isEmpty": "$null",
-  "isNotEmpty": "$notNull",
-  "isAnyOf": "$between",
-  "=": "$eqi",
-  "!=": "$ne",
-  ">": "$gt",
-  "<": "$lt",
-  ">=": "$gte",
-  "<=": "$lte",
-}));
+const operators = new Map(
+  Object.entries({
+    is: "$eqi",
+    "is not": "$ne",
+    "is after": "$gt",
+    "is on or after": "$gte",
+    "is before": "$lt",
+    "is on or before": "$lt",
+    "is empty": "$null",
+    "is not empty": "$notNull",
+    contains: "$contains",
+    "not contains": "$notContains",
+    equals: "$eqi",
+    startsWith: "$startsWith",
+    endsWith: "$endsWith",
+    isEmpty: "$null",
+    isNotEmpty: "$notNull",
+    isAnyOf: "$between",
+    "=": "$eqi",
+    "!=": "$ne",
+    ">": "$gt",
+    "<": "$lt",
+    ">=": "$gte",
+    "<=": "$lte",
+  })
+);
 
 function App() {
   const columns = useMemo<ColumnDef<any, any>[]>(
@@ -36,93 +38,93 @@ function App() {
       {
         id: "first_name",
 
-        accessorKey: "first_name",
+        accessorKey: "attributes.first_name",
         header: () => <span>First Name</span>,
         footer: (props) => props.column.id,
-        
-        size:200,
+
+        size: 200,
       },
       {
         id: "last_name",
 
-        accessorKey: "last_name",
+        accessorKey: "attributes.last_name",
         header: () => <span>Last Name</span>,
         footer: (props) => props.column.id,
-        
-        size:200,
+
+        size: 200,
       },
       {
         id: "email",
 
-        accessorKey: "email",
+        accessorKey: "attributes.email",
         header: () => "Email",
         footer: (props) => props.column.id,
-        
-        size:200,
+
+        size: 200,
       },
       {
         id: "views",
 
-        accessorKey: "views",
+        accessorKey: "attributes.views",
         header: () => <span>views</span>,
         meta: {
           type: "number",
         },
         footer: (props) => props.column.id,
-        aggregationFn: 'sum',
-        size:200,
+        aggregationFn: "sum",
+        size: 200,
       },
       {
         id: "dob",
 
-        accessorKey: "dob",
+        accessorKey: "attributes.dob",
         header: "Date of Birth",
         meta: {
           type: "date",
         },
         footer: (props) => props.column.id,
-        
-        size:250,
+
+        size: 250,
       },
       {
         id: "address",
 
-        accessorKey: "address",
+        accessorKey: "attributes.address",
         header: "Address",
-        footer: (props) => props.column.id,        
-        size:250,
+        footer: (props) => props.column.id,
+        size: 250,
       },
       {
         id: "phone",
 
-        accessorKey: "phone",
+        accessorKey: "attributes.phone",
         header: "Phone",
-        footer: (props) => props.column.id,        
-        size:250,
+        footer: (props) => props.column.id,
+        size: 250,
       },
       {
-        id: "createdOn",
+        id: "updatedAt",
 
-        accessorKey: "createdOn",
+        accessorKey: "attributes.updatedAt",
         header: "Created At",
         meta: {
           type: "datetime",
         },
         footer: (props) => props.column.id,
-        
-        size:250,
+
+        size: 250,
       },
       {
-        id: "updatedOn",
+        id: "updatedAt",
 
-        accessorKey: "updatedOn",
+        accessorKey: "attributes.updatedAt",
         header: "Updated At",
         meta: {
           type: "datetime",
         },
         footer: (props) => props.column.id,
-        
-        size:200,
+
+        size: 200,
       },
     ],
     []
@@ -133,17 +135,21 @@ function App() {
   const [sort, setSort] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<any>();
+  const [search, setSearch] = useState<string>();
   const [filters, setFilters] = useState<Filter>();
 
   const fetchData = async (page = 0, limit = 10) => {
-    // const url = new URL("http://localhost:1337/api/employees");
-    const url = new URL("http://localhost:5000/employees");
+    const url = new URL("http://localhost:1337/api/employees");
+    // const url = new URL("http://localhost:5000/employees");
     // http://localhost:3000/employees
-
 
     // pagination
     url.searchParams.append("pagination[page]", `${page + 1}`);
     url.searchParams.append("pagination[pageSize]", `${limit}`);
+
+    if(search){
+      url.searchParams.append("_q",search)
+    }
 
     // sorting
     if (sort && Object.keys(sort).length > 0) {
@@ -176,14 +182,14 @@ function App() {
   };
   useEffect(() => {
     fetchData(pageIndex, rowsPerPage);
-  }, [rowsPerPage, pageIndex, sort, filters]);
+  }, [rowsPerPage, pageIndex, sort, filters,search]);
 
   const tableOptions: TableOptions = {
-    titleOptions:{
-      title:"Employees"
+    titleOptions: {
+      title: "Employees",
     },
-    manualPagination: false,
-    manualSorting: false,
+    manualPagination: true,
+    manualSorting: true,
     paginationOption: {
       totalCount: data?.meta?.pagination.total ?? undefined,
       rowsPerPage: rowsPerPage,
@@ -193,9 +199,16 @@ function App() {
       },
       pageIndex: pageIndex,
     },
+    globalFilterOptions:{
+      value:search,
+      onChange(value) {
+          setSearch(value)
+      },
+      manual:true,
+    },
     sortingOptions: {
       currentSort: sort,
-      multiSort:true,
+      multiSort: true,
       onSort: setSort,
     },
     // subComponentOptions:{
@@ -212,20 +225,19 @@ function App() {
       setFilters,
       filters,
     },
-    loading:loading
+    loading: loading,
   };
 
   return (
     <Container sx={{ mt: 6 }} maxWidth={false}>
       <DataTable
         columns={columns}
-        data={data ?? []}
+        data={data?.data ?? []}
         onCellUpdate={(value) => console.log({ value })}
         tableOptions={tableOptions}
       />
     </Container>
   );
 }
-
 
 export default App;
