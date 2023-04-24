@@ -28,7 +28,7 @@ const TableHead = () => {
   const [mainAnchor, setmainAnchor] = useState<Element | null>(null);
   const [menuType, setMenuType] = useState<any | null>(null);
 
-  const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<string>();
 
   const menuAnchor = useRef<HTMLTableRowElement>(null);
 
