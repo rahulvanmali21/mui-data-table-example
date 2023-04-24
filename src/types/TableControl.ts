@@ -13,8 +13,8 @@ type PaginationOptions ={
 
 
 type SortingOptions = {
-    currentSort:string[] | string | null,
-    order?:SortOrder
+    currentSort:any,
+    order?:SortOrder,
     onSort:(column:any)=>void,
     multiSort?:boolean
 }

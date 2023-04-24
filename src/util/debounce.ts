@@ -5,7 +5,6 @@ export function debounce<F extends FuncType>(func: F, delay: number): (...args: 
   return (...args: Parameters<F>): void => {
     clearTimeout(timerId);
     timerId = setTimeout(() => {
-      console.log("fired")
       func(...args);
     }, delay);
   };

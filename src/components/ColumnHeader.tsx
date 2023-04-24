@@ -22,15 +22,12 @@ const ColumnHeader = ({ header, onClick }: any) => {
   const { state } = useColumnDnd();
     return (
     <TableCell
-      ref={dropRef}
+      ref={!pinned ? dropRef : null}
       title={header.id}
       colSpan={header.colSpan}
       component="th"
       padding={header.id === "select" ? "checkbox" : "normal"}
-      sx={{
-        minWidth: header.getSize(),
-        opacity: state.draggedColumn === header.id ? 0.5 : 1,
-      }}
+      style={{ minWidth: header.getSize(),  opacity: state.draggedColumn === header.id ? 0.5 : 1,}}
       isHoveredOn={state.hoverOn && !!state.hoverOn[header.id] }
       isDragged={state.draggedColumn && !!state.draggedColumn[header.id]}
       pinned={pinned ?? false}

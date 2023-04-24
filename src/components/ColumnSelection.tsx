@@ -18,7 +18,9 @@ const ColumnSelection = () => {
      {table
       .getAllLeafColumns()
       .filter((c) => c.id !== "select")
-      .map((column, index) => (
+      .map((column, index) => {
+      
+        return(
         <ListItem dense key={index}>
           <ListItemIcon
             sx={{
@@ -37,7 +39,7 @@ const ColumnSelection = () => {
           </ListItemIcon>
           <ListItemText id={column.id} primary={column.id} />
         </ListItem>
-      ))} 
+      )})} 
   </List>
   )
 }
