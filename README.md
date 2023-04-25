@@ -31,11 +31,17 @@ Features
 
 This project demonstrates how to use React-Table with Material-UI. Specifically, it shows how to:
 
-- Create a table with pagination(client and server side), sorting(client and server side), and filtering(client and server side) functionality
+- Create a table with pagination(client and server side), and filtering(client and server side) functionality
 
 - Customize the table columns and rows using Material-UI components
 
 - column hiding and resizing
+
+- simple and complex filters
+
+- reordering and pinning columns
+
+- sorting(client and server side) with options for single and multiple value sort
 
 - Integrate React-Table with Material-UI's theme and styling system
 
