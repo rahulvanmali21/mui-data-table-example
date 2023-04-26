@@ -41,6 +41,8 @@ This project demonstrates how to use React-Table with Material-UI. Specifically,
 
 - reordering and pinning columns
 
+- client-side grouping
+
 - sorting(client and server side) with options for single and multiple value sort
 
 - Integrate React-Table with Material-UI's theme and styling system
@@ -58,6 +60,17 @@ This project demonstrates how to use React-Table with Material-UI. Specifically,
 - Node.js: A JavaScript runtime built on Chrome's V8 JavaScript engine
 
 - npm: A package manager for Node.js
+
+
+## Todo Features
+
+- Vritualized long table rows
+
+- Infinite scrolling 
+
+- Editable TableCell
+
+- Export to CSV and Excel
 
 
 ## Credits
