@@ -9,6 +9,7 @@ type PaginationOptions ={
     pageIndex:number,
     onRowsPerPageChange:(v:number)=>void,
     gotoPage:(pageNo:number)=>void,
+    infiniteScroll?:boolean
 }
 
 
@@ -56,7 +57,8 @@ export type TableOptions = {
     filterOptions:FilterOptions,
     subComponentOptions?:SubComponentOptions
     loading?:boolean
-    showFooter?:boolean
+    showFooter?:boolean,
+    virtualRows?:any
 }
 
 

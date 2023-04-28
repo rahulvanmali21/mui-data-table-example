@@ -7,9 +7,12 @@ import useTablePagination from "../hooks/useTablePagination";
 type Props = {};
 
 const TablePagination = (props: any) => {
-  const { rowsPerPage, gotoPage, count, pageNo, onRowsPerPageChange } =
+  const { rowsPerPage, gotoPage, count, pageNo, onRowsPerPageChange,hidePagination } =
     useTablePagination();
 
+    if(hidePagination){
+      return null;
+    }
 
   return (
     <Paper

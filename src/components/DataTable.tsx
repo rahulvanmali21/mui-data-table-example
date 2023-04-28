@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import {
   PaginationState,
@@ -23,13 +23,15 @@ import TablePagination from "./TablePagination";
 import useSkipper from "../hooks/useSkipper";
 import { defaultColumn } from "./DefaultColumn";
 import { rowSelectionOption } from "./RowSelection";
-import { DataTableProp } from "../types/TableControl";
+import { DataTableProp, TableOptions } from "../types/TableControl";
 import { TableOptionContext } from "../TableOptionContext";
 import { RowExpander } from "./ExpanderColumn";
 import TableFooter from "./TableFooter";
 import ColumnDragAndDrop from "../ColumnDragAndDropContext";
 import TableToolbar from "./TableToolbar";
 import { fuzzyFilter } from "../util/filters";
+import { useVirtual } from 'react-virtual';
+import useVirtualizeTable from "../hooks/useVirtualizeTable";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -61,6 +63,12 @@ const DataTable = (props: DataTableProp) => {
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(
     columns.map((column) => column.id as string)
   );
+  const tableContainerRef = useRef<HTMLDivElement>(null)
+
+
+
+
+
 
   const table = useReactTable({
     data: props.data ?? [],
@@ -108,14 +116,9 @@ const DataTable = (props: DataTableProp) => {
     },
   });
 
-  // data,
-  // columns,
-  // // Pipeline
-  // getCoreRowModel: getCoreRowModel(),
-  // getFilteredRowModel: getFilteredRowModel(),
-  // getPaginationRowModel: getPaginationRowModel(),
-  // //
-  // debugTable: true,
+
+
+
 
   return (
     <TableContext.Provider value={table}>
@@ -128,13 +131,15 @@ const DataTable = (props: DataTableProp) => {
             sx={{
               maxWidth: "100%",
               overflowX: "auto",
+              height:500,
               borderRadius: 0,
               borderBottom: 0,
             }}
+            ref={tableContainerRef}
           >
             <MuiTable
               stickyHeader
-              sx={{ width: `clamp(100%,${table.getCenterTotalSize()}px,600%)` }}
+              sx={{ width: `clamp(100%,${table.getCenterTotalSize()}px,600%)`, }}
             >
               <TableHead />
               <TableBody />

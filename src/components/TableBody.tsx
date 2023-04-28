@@ -1,4 +1,4 @@
-import { flexRender } from "@tanstack/react-table";
+import { Cell, flexRender } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useRef } from "react";
 import { useTable } from "../TableContext";
 import {
@@ -13,6 +13,7 @@ import Collapse from "@mui/material/Collapse";
 import useTableOptions from "../hooks/useTableOptions";
 import useRowSelection from "../hooks/useRowSelection";
 import BodyTableCell from "./BodyTableCell";
+import { Row } from "@tanstack/react-table";
 
 const TableBody = () => {
   const table = useTable();
@@ -24,6 +25,7 @@ const TableBody = () => {
 
   const rows = table.getRowModel().rows;
 
+
   if (tableOptions?.loading) {
     return <LoadingComponent />;
   }
@@ -31,36 +33,42 @@ const TableBody = () => {
   return (
     <MuiTableBody>
       {rows.length > 0 ? (
-        rows.map((row, i) => (
-          <React.Fragment key={i}>
-            <TableRow
-              hover
-              {...(i === 0 && { ref: bodyRowRef })}
-              selected={selectedIDsSet?.has(row.id)}
-            >
-              {row.getVisibleCells().map((cell, j) => (
-                <BodyTableCell
-                  cell={cell}
-                  row={row}
-                  key={j}
-                  rowIndex={i + 1}
-                  padding={cell.id === "select" ? "checkbox" : "normal"}
-                />
-              ))}
-            </TableRow>
-            {/* subcomponent */}
-            <TableRow>
-              <TableCell
-                sx={{ pb: 0, pt: 0, border: 0 }}
-                colSpan={row.getVisibleCells().length}
+        rows.map((row: any, i: number) => {
+          return (
+            <React.Fragment key={i}>
+              <TableRow
+                hover
+                {...(i === 0 && { ref: bodyRowRef })}
+                selected={selectedIDsSet?.has(row.id)}
               >
-                <Collapse in={row.getIsExpanded()} timeout="auto" unmountOnExit>
-                  {SubComponent ? <SubComponent row={row} /> : ""}
-                </Collapse>
-              </TableCell>
-            </TableRow>
-          </React.Fragment>
-        ))
+                {row.getVisibleCells().map((cell:Cell<any,any>, j:number) => (
+                  <BodyTableCell
+                    cell={cell}
+                    row={row}
+                    key={j}
+                    rowIndex={i + 1}
+                    padding={cell.id === "select" ? "checkbox" : "normal"}
+                  />
+                ))}
+              </TableRow>
+              {/* subcomponent */}
+              <TableRow>
+                <TableCell
+                  sx={{ pb: 0, pt: 0, border: 0 }}
+                  colSpan={row.getVisibleCells().length}
+                >
+                  <Collapse
+                    in={row.getIsExpanded()}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    {SubComponent ? <SubComponent row={row} /> : ""}
+                  </Collapse>
+                </TableCell>
+              </TableRow>
+            </React.Fragment>
+          );
+        })
       ) : (
         <TableRow>
           <TableCell colSpan={table.getAllLeafColumns().length}>

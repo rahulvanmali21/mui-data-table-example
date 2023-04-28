@@ -46,7 +46,11 @@ const useTableSort = () => {
     }
   }, [currentSort])
   
-
+  console.log({
+    manualSorting,
+    getIsSorted,
+    getToggleSortingHandler,
+  })
   return {
     manualSorting,
     getIsSorted,
