@@ -32,6 +32,7 @@ const ColumnHeader = ({ header, onClick }: any) => {
       isDragged={state.draggedColumn && !!state.draggedColumn[header.id]}
       pinned={pinned ?? false}
       offset={pinned ? getColumnOffset(header.column.id, pinned) : null}
+      sx={{fontWeight:700}}
     >
       <Box
         width={"100%"}
@@ -67,7 +68,7 @@ const ColumnHeader = ({ header, onClick }: any) => {
                     ? () => getToggleSortingHandler(header.column.id)
                     : header.column.getToggleSortingHandler()
                 }
-                direction={getIsSorted(header.column.id, header)}
+                direction={getIsSorted(header.column.id)}
               />
             )}
             {header.id !== "select" && header.id !== "expander" && !pinned &&  (

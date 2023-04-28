@@ -8,13 +8,12 @@ const useTablePagination = () => {
   const options: TableOptions | undefined = useTableOptions();
   const paginationOption = options?.paginationOption;
   const { pageSize, pageIndex } = table.getState().pagination
-
+  const hidePagination = paginationOption?.infiniteScroll
   const manualPagination = options?.manualPagination ?? false;
   const rowsPerPage = manualPagination ? paginationOption?.rowsPerPage : pageSize;
 
   const pageNo = manualPagination ? paginationOption?.pageIndex : pageIndex;
   const count = manualPagination ? paginationOption?.totalCount : table.getFilteredRowModel().rows.length;
-
 
   const gotoPage = useCallback((pageIndex:string|number)=>{
     if(manualPagination) paginationOption?.gotoPage(Number(pageIndex)) 
@@ -34,6 +33,7 @@ const useTablePagination = () => {
     onRowsPerPageChange,
     pageNo,
     count,
+    hidePagination
   };
 };
 
