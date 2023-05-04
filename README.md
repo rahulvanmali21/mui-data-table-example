@@ -27,7 +27,7 @@ This will start the development server and open the app in your default browser.
 
 
 
-Features
+## Features
 
 This project demonstrates how to use React-Table with Material-UI. Specifically, it shows how to:
 
