@@ -9,25 +9,30 @@ import {
   NativeSelect,
   TextField,
 } from "@mui/material";
-import { DATE_OPERATOR, NUMBERIC_OPERATOR, STRING_OPERATOR } from "../constants/filters";
+import {
+  DATE_OPERATOR,
+  NUMBERIC_OPERATOR,
+  STRING_OPERATOR,
+} from "../constants/filters";
 import { RowData } from "@tanstack/react-table";
 import useTableOptions from "../hooks/useTableOptions";
+import { useTableFilter } from "../hooks/useTableFilter";
 
-
-declare module '@tanstack/table-core' {
-    interface ColumnMeta<TData extends RowData, TValue> {
-      type?: string
-    }
+declare module "@tanstack/table-core" {
+  interface ColumnMeta<TData extends RowData, TValue> {
+    type?: string;
   }
-
-
-type Props ={
-  selectedColumnId?:string | null
 }
 
-const Filter = ({selectedColumnId}:Props) => {
+type Props = {
+  selectedColumnId?: string | null;
+};
+
+const Filter = ({ selectedColumnId }: Props) => {
   const table = useTable();
-  const [selectedColumn, setSelectedColumn] = useState<string | null>(selectedColumnId ?? "");
+  const [selectedColumn, setSelectedColumn] = useState<string | null>(
+    selectedColumnId ?? ""
+  );
   const [operator, setOperator] = useState<string | null>(null);
   const [value, setValue] = useState<string | null>(null);
 
@@ -36,58 +41,57 @@ const Filter = ({selectedColumnId}:Props) => {
   const valueRef = useRef<HTMLInputElement>();
 
 
-  const tableOptions = useTableOptions()
-  
-  let type = selectedColumn ? table.getColumn(selectedColumn)?.columnDef?.meta?.type : "text";
-   type = type === "datetime" ? "datetime-local" : type; 
-  const filter = tableOptions?.filterOptions.filters ?? null;
+  const { filter, setFilters } = useTableFilter();
 
-  useEffect(()=>{
+  let type = selectedColumn
+    ? table.getColumn(selectedColumn)?.columnDef?.meta?.type
+    : "text";
+  type = type === "datetime" ? "datetime-local" : type;
+
+  useEffect(() => {
     setSelectedColumn(filter?.columnId ?? null);
     setOperator(filter?.operator ?? null);
     setValue(filter?.value ?? null);
-  },[filter])
+  }, [filter]);
 
-
-    
-  
   const operators = useMemo(() => {
-    if(selectedColumn){
-        const colDef =  table.getColumn(selectedColumn)?.columnDef;
-        if(colDef?.meta?.type ==="number"){
-            return NUMBERIC_OPERATOR;
-        }
-        if(colDef?.meta?.type ==="date" || colDef?.meta?.type ==="datetime"){
-            return DATE_OPERATOR;
-        }
-        return STRING_OPERATOR;
+    if (selectedColumn) {
+      const colDef = table.getColumn(selectedColumn)?.columnDef;
+      if (colDef?.meta?.type === "number") {
+        return NUMBERIC_OPERATOR;
+      }
+      if (colDef?.meta?.type === "date" || colDef?.meta?.type === "datetime") {
+        return DATE_OPERATOR;
+      }
+      return STRING_OPERATOR;
     }
     return STRING_OPERATOR;
   }, [selectedColumn]);
 
-  const applyFilter = () =>{
-    if(columnnIdRef.current?.value && operatorRef.current?.value && valueRef.current?.value){
+  const applyFilter = () => {
+    if (
+      columnnIdRef.current?.value &&
+      operatorRef.current?.value &&
+      valueRef.current?.value
+    ) {
       let filters = {
-        columnId:columnnIdRef.current?.value,
-        operator:operatorRef.current?.value,
-        value:valueRef.current?.value
-      }
-      
-      tableOptions?.filterOptions?.setFilters(filters);
+        columnId: columnnIdRef.current?.value,
+        operator: operatorRef.current?.value,
+        value: valueRef.current?.value,
+      };
+
+      setFilters?.(filters);
     }
-    
-  }
-
-
+  };
 
   return (
     <Box sx={{ maxWidth: 600, p: 2, width: 600 }}>
       <Grid container columnSpacing={2} columns={10} alignItems="flex-end">
         <Grid item xs={3}>
           <FormControl fullWidth>
-            <InputLabel variant="standard" 
-              shrink={true}
-            >column</InputLabel>
+            <InputLabel variant="standard" shrink={true}>
+              column
+            </InputLabel>
             <NativeSelect
               value={selectedColumn}
               onChange={(e) => setSelectedColumn(e.target.value)}
@@ -97,12 +101,13 @@ const Filter = ({selectedColumnId}:Props) => {
                 name: "columnId",
               }}
             >
-
               {table
                 .getAllLeafColumns()
-                .filter((c) => c.id !== "select" &&  c.id !== "expander")
+                .filter((c) => c.id !== "select" && c.id !== "expander")
                 .map((column, cid) => (
-                  <option key={cid} value={column.id}>{column.id}</option>
+                  <option key={cid} value={column.id}>
+                    {column.id}
+                  </option>
                 ))}
             </NativeSelect>
           </FormControl>
@@ -120,7 +125,9 @@ const Filter = ({selectedColumnId}:Props) => {
               }}
             >
               {operators.map((column, cid) => (
-                <option value={column} key={cid}>{column}</option>
+                <option value={column} key={cid}>
+                  {column}
+                </option>
               ))}
             </NativeSelect>
           </FormControl>
@@ -137,7 +144,9 @@ const Filter = ({selectedColumnId}:Props) => {
           />
         </Grid>
         <Grid item xs={1}>
-              <Button onClick={applyFilter} sx={{textTransform:"unset"}}>Apply</Button>
+          <Button onClick={applyFilter} sx={{ textTransform: "unset" }}>
+            Apply
+          </Button>
         </Grid>
       </Grid>
     </Box>

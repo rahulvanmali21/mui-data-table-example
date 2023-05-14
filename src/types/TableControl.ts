@@ -52,6 +52,7 @@ export type TableOptions = {
     globalFilterOptions?:GlobalFilterOptions,
     manualPagination?:boolean,
     manualSorting?:boolean,
+    mannualFilter?:boolean,
     paginationOption?:PaginationOptions,
     sortingOptions?:SortingOptions,
     filterOptions:FilterOptions,

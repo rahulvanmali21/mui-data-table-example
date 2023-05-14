@@ -103,7 +103,7 @@ function App() {
         size: 250,
       },
       {
-        id: "updatedAt",
+        id: "created_At",
 
         accessorKey: "updatedAt",
         header: "Created At",
@@ -190,6 +190,7 @@ function App() {
     },
     manualPagination: false,
     manualSorting: false,
+    mannualFilter:false,
     paginationOption: {
       totalCount: data?.meta?.pagination.total ?? undefined,
       infiniteScroll:false,
