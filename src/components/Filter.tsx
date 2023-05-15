@@ -15,7 +15,6 @@ import {
   STRING_OPERATOR,
 } from "../constants/filters";
 import { RowData } from "@tanstack/react-table";
-import useTableOptions from "../hooks/useTableOptions";
 import { useTableFilter } from "../hooks/useTableFilter";
 
 declare module "@tanstack/table-core" {
