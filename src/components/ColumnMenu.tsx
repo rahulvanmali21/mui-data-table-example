@@ -52,6 +52,9 @@ const ColumnMenu = ({
     getToggleSortingHandler(selectedColumnId, order);
     onClose?.();
   };
+  if(!column){
+    return null;
+  }
 
   return (
     <Menu

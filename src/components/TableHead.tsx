@@ -13,8 +13,6 @@ import useTableOptions from "../hooks/useTableOptions";
 import ColumnMenu from "./ColumnMenu";
 import ComplexFilter from "./ui/ComplexFilter.tsx/ComplexFilter";
 import ColumnHeader from "./ColumnHeader";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 const TableHead = () => {
   const table = useTable();
